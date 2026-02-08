@@ -37,9 +37,9 @@ export default function AnimalSearchPage() {
 
     return (
         <div className="container py-8">
-            <div className="text-center mb-10">
-                <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>Find Your Perfect Companion</h1>
-                <p className="text-subtle">Browse our available pets and give them a forever home.</p>
+            <div className="text-center mb-8">
+                <h1 style={{ fontSize: 'var(--mobile-h1, 2.5rem)', fontWeight: 800, marginBottom: '0.5rem' }}>Find Your New Best Friend</h1>
+                <p className="text-subtle" style={{ fontSize: '0.9rem', maxWidth: '500px', margin: '0 auto' }}>Browse our available pets and give them a forever home.</p>
             </div>
 
             <div className={`flex gap-4 mb-8 justify-center max-w-2xl mx-auto ${styles.filterContainer}`}>
