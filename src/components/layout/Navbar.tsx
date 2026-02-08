@@ -1,0 +1,63 @@
+"use client";
+
+import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import styles from './Navbar.module.css';
+import { useAuth } from '@/lib/auth-context';
+import { Button } from '@/components/ui/Button';
+
+export function Navbar() {
+    const pathname = usePathname();
+    const { user, logout } = useAuth();
+
+    const isActive = (path: string) => pathname === path ? styles.active : '';
+
+    return (
+        <nav className={styles.navbar}>
+            <div className={styles.container}>
+                <Link href={user ? "/dashboard" : "/"} className={styles.brand}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.logo}>
+                        <path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58 1.57 3.8.74 5.42 1.62 1.03 2.16 3.48 1.45 5.37C21.82 15.82 20 18 16 18c-2.6 0-3.69 1.73-4 3-1-.95-2-3-4-3-4 0-5.82-2.18-6.61-4.21-.71-1.89-.17-4.34 1.45-5.37-.83-1.62-.66-4.84.74-5.42 1.39-.58 4.64.26 6.42 2.26.65-.17 1.33-.26 2-.26z" />
+                    </svg>
+                    Pet Connect
+                </Link>
+
+                <div className={styles.navLinks}>
+                    {(!user || user.role === 'USER') && (
+                        <>
+                            <Link href="/animals" className={`${styles.link} ${isActive('/animals')}`}>Find a Pet</Link>
+                            <Link href="/donate" className={`${styles.link} ${isActive('/donate')}`}>Donate</Link>
+                            <Link href="/marketplace" className={`${styles.link} ${isActive('/marketplace')}`}>Shop</Link>
+                        </>
+                    )}
+
+                    {(user && user.role !== 'USER') && (
+                        <>
+                            <Link href="/dashboard" className={`${styles.link} ${isActive('/dashboard')}`}>Dashboard</Link>
+                            <Link href="/animals" className={`${styles.link} ${isActive('/animals')}`}>Public View</Link>
+                        </>
+                    )}
+                </div>
+
+                <div className={styles.authButtons}>
+                    {user ? (
+                        <div className={styles.userMenu}>
+                            <span>{user.name} ({user.role})</span>
+                            <Button size="sm" variant="outline" onClick={logout}>Log out</Button>
+                        </div>
+                    ) : (
+                        <>
+                            <Link href="/login">
+                                <Button size="sm" variant="ghost">Log in</Button>
+                            </Link>
+                            <Link href="/register">
+                                <Button size="sm" variant="primary">Sign up</Button>
+                            </Link>
+                        </>
+                    )}
+                </div>
+            </div>
+        </nav>
+    );
+}

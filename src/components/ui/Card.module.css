@@ -1,0 +1,28 @@
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.p-none {
+    padding: 0;
+}
+
+.p-sm {
+    padding: 0.75rem;
+}
+
+.p-md {
+    padding: 1.5rem;
+}
+
+.p-lg {
+    padding: 2rem;
+}

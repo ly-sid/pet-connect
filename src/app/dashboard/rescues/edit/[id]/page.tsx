@@ -1,0 +1,205 @@
+"use client";
+
+import { useEffect, useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { mockService } from '@/lib/mock-data';
+import { Card } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { Animal } from '@/lib/types';
+import styles from '../../../intake/Intake.module.css'; // Reuse styles
+
+export default function EditAnimalPage() {
+    const router = useRouter();
+    const { id } = useParams();
+    const [loading, setLoading] = useState(false);
+    const [preview, setPreview] = useState<string | null>(null);
+
+    const [formData, setFormData] = useState({
+        name: '',
+        species: 'Dog',
+        breed: '',
+        age: '',
+        gender: 'Male',
+        location: '',
+        description: '',
+        fee: ''
+    });
+
+    useEffect(() => {
+        if (typeof id === 'string') {
+            const animal = mockService.getAnimalById(id);
+            if (animal) {
+                setFormData({
+                    name: animal.name,
+                    species: animal.species,
+                    breed: animal.breed,
+                    age: animal.age.toString(),
+                    gender: animal.gender,
+                    location: 'Shelter 1', // Mock default
+                    description: 'Pre-existing description...',
+                    fee: animal.fee.toString()
+                });
+                setPreview(animal.images[0]);
+            }
+        }
+    }, [id]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                if (ev.target?.result) setPreview(ev.target.result as string);
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+
+        if (typeof id === 'string') {
+            mockService.updateAnimal(id, {
+                ...formData,
+                gender: formData.gender as "Male" | "Female",
+                age: parseInt(formData.age) || 0,
+                fee: parseInt(formData.fee) || 0,
+                // Preserve existing images if no new one
+                images: preview ? [preview] : undefined
+            });
+        }
+
+        setTimeout(() => {
+            alert('Animal details updated successfully!');
+            router.push('/dashboard/rescues');
+        }, 500);
+    };
+
+    return (
+        <div className={styles.container}>
+            <div className={styles.header}>
+                <div>
+                    <div className="flex items-center gap-2 mb-1">
+                        <button onClick={() => router.back()} className="text-sm text-subtle hover:text-primary">← Back</button>
+                    </div>
+                    <h1 className={styles.title}>Edit Animal: {formData.name}</h1>
+                </div>
+                <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => router.back()}>Cancel</Button>
+                    <Button onClick={handleSubmit} disabled={loading}>
+                        {loading ? 'Saving...' : 'Save Changes'}
+                    </Button>
+                </div>
+            </div>
+
+            <form className={styles.grid}>
+                {/* Left Column: Media & Core ID */}
+                <div className={styles.imageSection}>
+                    <Card padding="none" className={styles.imageUpload}>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="absolute inset-0 opacity-0 cursor-pointer"
+                            onChange={handleImageChange}
+                        />
+                        {preview ? (
+                            <img src={preview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                            <span className="font-medium text-sm">Click to change photo</span>
+                        )}
+                    </Card>
+
+                    <Card padding="md">
+                        <div className={styles.sectionLabel}>Identification</div>
+                        <div className="flex flex-col gap-4">
+                            <Input
+                                label="Name"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                            />
+
+                            <div className="flex flex-col gap-1">
+                                <label className="text-sm font-medium">Species</label>
+                                <select name="species" value={formData.species} onChange={handleChange} className={styles.select}>
+                                    <option value="Dog">Dog</option>
+                                    <option value="Cat">Cat</option>
+                                    <option value="Bird">Bird</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <Input
+                                label="Breed"
+                                name="breed"
+                                value={formData.breed}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </Card>
+                </div>
+
+                {/* Right Column: Details */}
+                <div className={styles.formSection}>
+                    <Card padding="md">
+                        <div className={styles.sectionLabel}>Physical Details</div>
+                        <div className={styles.row}>
+                            <Input
+                                label="Age (Years)"
+                                name="age"
+                                type="number"
+                                value={formData.age}
+                                onChange={handleChange}
+                            />
+                            <div className="flex flex-col gap-1">
+                                <label className="text-sm font-medium">Gender</label>
+                                <select name="gender" value={formData.gender} onChange={handleChange} className={styles.select}>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                    </Card>
+
+                    <Card padding="md">
+                        <div className={styles.sectionLabel}>History & Status</div>
+                        <div className="flex flex-col gap-4">
+                            <Input
+                                label="Source / Location"
+                                name="location"
+                                value={formData.location}
+                                onChange={handleChange}
+                            />
+
+                            <div className="flex flex-col gap-1">
+                                <label className="text-sm font-medium">Description</label>
+                                <textarea
+                                    name="description"
+                                    className={styles.textarea}
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+                    </Card>
+
+                    <Card padding="md">
+                        <div className={styles.sectionLabel}>Adoption</div>
+                        <Input
+                            label="Adoption Fee (₹)"
+                            name="fee"
+                            type="number"
+                            value={formData.fee}
+                            onChange={handleChange}
+                        />
+                    </Card>
+                </div>
+            </form>
+        </div>
+    );
+}
