@@ -52,7 +52,7 @@ export function Navbar() {
                     )}
                 </button>
 
-                <div className={`${styles.navLinks} ${isMenuOpen ? styles.open : ''}`}>
+                <div className={`${styles.navLinks} ${isMenuOpen ? styles.open + ' ' + styles.activeDrawer : ''}`}>
                     {(!user || user.role === 'USER') && (
                         <>
                             <Link href="/animals" className={`${styles.link} ${isActive('/animals')}`} onClick={() => setIsMenuOpen(false)}>Find a Pet</Link>
@@ -68,7 +68,7 @@ export function Navbar() {
                         </>
                     )}
 
-                    {/* Authentication Links in Mobile Overlay */}
+                    {/* Authentication Links consolidated for mobile drawer */}
                     <div className={`${styles.authButtons} ${isMenuOpen ? styles.open : 'mobile-hide'}`}>
                         {user ? (
                             <div className={styles.userMenu}>
@@ -87,6 +87,21 @@ export function Navbar() {
                         )}
                     </div>
                 </div>
+
+                {/* Backdrop for the side drawer */}
+                {isMenuOpen && (
+                    <div
+                        className="mobile-show"
+                        style={{
+                            position: 'fixed',
+                            inset: 0,
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                            zIndex: 999
+                        }}
+                        onClick={() => setIsMenuOpen(false)}
+                    />
+                )}
+
 
                 {/* Desktop Authentication Buttons */}
                 <div className={`${styles.authButtons} mobile-hide`}>
