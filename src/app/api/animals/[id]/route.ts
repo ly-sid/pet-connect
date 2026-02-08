@@ -3,11 +3,12 @@ import prisma from '@/lib/prisma';
 
 export async function GET(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const animal = await prisma.animal.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: {
                 medicalRecords: true,
             }
@@ -26,12 +27,13 @@ export async function GET(
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const body = await req.json();
         const animal = await prisma.animal.update({
-            where: { id: params.id },
+            where: { id },
             data: body
         });
 
@@ -44,11 +46,12 @@ export async function PATCH(
 
 export async function DELETE(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         await prisma.animal.delete({
-            where: { id: params.id }
+            where: { id },
         });
 
         return NextResponse.json({ message: 'Animal deleted' });

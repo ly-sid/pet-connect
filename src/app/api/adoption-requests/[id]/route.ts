@@ -16,9 +16,10 @@ async function getUserFromReq(req: Request) {
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const user = await getUserFromReq(req);
         if (!user || user.role !== 'ADMIN') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -28,7 +29,7 @@ export async function PATCH(
         const { status } = body;
 
         const request = await prisma.adoptionRequest.update({
-            where: { id: params.id },
+            where: { id },
             data: { status },
             include: { animal: true }
         });
