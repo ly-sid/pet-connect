@@ -79,20 +79,32 @@
     gap: 1rem;
 }
 
-.textarea {
+.textarea,
+.input {
     width: 100%;
     padding: 0.625rem 0.875rem;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-subtle);
     font-size: 0.9375rem;
-    min-height: 100px;
-    resize: none;
     outline: none;
     transition: border-color 0.2s;
+    background-color: white;
+    color: var(--text-main);
 }
 
+.textarea {
+    min-height: 100px;
+    resize: none;
+}
+
+.input:focus,
 .textarea:focus {
     border-color: var(--border-focus);
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
 }
 
 .successMsg {

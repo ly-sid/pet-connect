@@ -10,18 +10,9 @@ export function ContactWidget() {
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = () => {
         setLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            setLoading(false);
-            setSubmitted(true);
-            setTimeout(() => {
-                setSubmitted(false);
-                setIsOpen(false);
-            }, 3000);
-        }, 1000);
+        // Page will redirect to Google Form success page
     };
 
     return (
@@ -33,29 +24,51 @@ export function ContactWidget() {
                         <p>We'll get back to you soon!</p>
                     </div>
 
-                    {submitted ? (
-                        <div className={styles.successMsg}>
-                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <p className="font-bold">Message Sent!</p>
-                            <p className="text-sm text-subtle">Thank you for reaching out.</p>
+                    <form
+                        className={styles.form}
+                        onClick={(e) => e.stopPropagation()}
+                        action="https://docs.google.com/forms/d/e/1FAIpQLSfvHXQiFN-RtPplpAJ2N6m3c678tt6X6EMGbsJ79Nd_1A5q_Q/formResponse"
+                        method="POST"
+                        target="_self"
+                    >
+                        {/* Hidden fields required by Google Forms */}
+                        <input type="hidden" name="fvv" value="1" />
+                        <input type="hidden" name="pageHistory" value="0" />
+                        <input type="hidden" name="fbzx" value="3941958787586152760" />
+
+                        <div className={styles.inputGroup}>
+                            <label className="text-sm font-medium mb-1 block">Name</label>
+                            <input
+                                name="entry.502185534"
+                                className={styles.input}
+                                required
+                                placeholder="Your name"
+                                type="text"
+                            />
                         </div>
-                    ) : (
-                        <form className={styles.form} onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
-                            <Input label="Name" required placeholder="Your name" />
-                            <Input label="Email" type="email" required placeholder="your@email.com" />
-                            <div>
-                                <label className="text-sm font-medium mb-1 block">Message</label>
-                                <textarea
-                                    className={styles.textarea}
-                                    required
-                                    placeholder="How can we help?"
-                                />
-                            </div>
-                            <Button fullWidth loading={loading} type="submit">Send Message</Button>
-                        </form>
-                    )}
+
+                        <div className={styles.inputGroup}>
+                            <label className="text-sm font-medium mb-1 block">Email</label>
+                            <input
+                                name="entry.252297169"
+                                className={styles.input}
+                                required
+                                placeholder="your@email.com"
+                                type="email"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="text-sm font-medium mb-1 block">Message</label>
+                            <textarea
+                                name="entry.276232382"
+                                className={styles.textarea}
+                                required
+                                placeholder="How can we help?"
+                            />
+                        </div>
+                        <Button fullWidth type="submit">Send Message</Button>
+                    </form>
                 </div>
             )}
 
