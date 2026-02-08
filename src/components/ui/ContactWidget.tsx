@@ -55,11 +55,15 @@ export function ContactWidget() {
                                 method="POST"
                                 target="hidden_iframe"
                             >
-                                {/* Mandatory Google Form Hidden Fields */}
+                                {/* Exact structure from updated DOM */}
+                                <input type="hidden" name="entry.502185534" value="" />
+                                <input type="hidden" name="entry.252297169" value="" />
+                                <input type="hidden" name="entry.276232382" value="" />
+
                                 <input type="hidden" name="fvv" value="1" />
-                                <input type="hidden" name="partialResponse" value='[null,null,"3941958787586152760"]' />
+                                <input type="hidden" name="partialResponse" value='[null,null,"-8944590041944494372"]' />
                                 <input type="hidden" name="pageHistory" value="0" />
-                                <input type="hidden" name="fbzx" value="3941958787586152760" />
+                                <input type="hidden" name="fbzx" value="-8944590041944494372" />
                                 <input type="hidden" name="submissionTimestamp" value="-1" />
 
                                 <div className={styles.inputGroup}>
