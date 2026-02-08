@@ -12,13 +12,13 @@ const PRODUCTS = [
 
 export default function MarketplacePage() {
     return (
-        <div className="container py-8">
-            <div className="flex justify-between items-center mb-8" style={{ flexWrap: 'wrap', gap: '1rem', width: '100%' }}>
-                <div style={{ flex: '1 1 300px', minWidth: 0 }}>
-                    <h1 style={{ fontSize: 'var(--mobile-h1, 2.5rem)', fontWeight: 800, marginBottom: '0.5rem' }}>Pet Marketplace</h1>
-                    <p className="text-subtle" style={{ fontSize: '0.9rem' }}>Essentials for your furry friends. Proceeds support our shelter.</p>
+        <div className="container py-12">
+            <div className="flex justify-between items-center mb-8">
+                <div>
+                    <h1 style={{ fontSize: '2.5rem', fontWeight: 800 }}>Pet Marketplace</h1>
+                    <p className="text-subtle">Essentials for your furry friends. Proceeds support our shelter.</p>
                 </div>
-                <Button variant="outline" className="mobile-full-width" style={{ flexShrink: 0 }}>View Cart (0)</Button>
+                <Button variant="outline">View Cart (0)</Button>
             </div>
 
             <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>

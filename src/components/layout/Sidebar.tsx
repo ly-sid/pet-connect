@@ -6,12 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import styles from './Sidebar.module.css';
 
-interface SidebarProps {
-    isOpen?: boolean;
-    onClose?: () => void;
-}
-
-export function Sidebar({ isOpen, onClose }: SidebarProps) {
+export function Sidebar() {
     const { user } = useAuth();
     const pathname = usePathname();
 
@@ -19,38 +14,25 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
     const isActive = (path: string) => pathname === path || pathname.startsWith(path + '/') ? styles.active : '';
 
-    const handleLinkClick = () => {
-        if (onClose) onClose();
-    };
-
     return (
-        <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
+        <aside className={styles.sidebar}>
             <div className={styles.menu}>
                 <div className={styles.sectionTitle}>Overview</div>
-                <Link
-                    href="/dashboard"
-                    className={`${styles.item} ${isActive('/dashboard') && pathname === '/dashboard' ? styles.active : ''}`}
-                    onClick={handleLinkClick}
-                >
+                <Link href="/dashboard" className={`${styles.item} ${isActive('/dashboard') && pathname === '/dashboard' ? styles.active : ''}`}>
                     Dashboard
                 </Link>
-                <Link
-                    href="/dashboard/notifications"
-                    className={`${styles.item} ${isActive('/dashboard/notifications')}`}
-                    onClick={handleLinkClick}
-                >
+                <Link href="/dashboard/notifications" className={`${styles.item} ${isActive('/dashboard/notifications')}`}>
                     Notifications
                 </Link>
-
 
                 {/* Role Specific Modules */}
                 {(user.role === 'RESCUE' || user.role === 'ADMIN') && (
                     <>
                         <div className={styles.sectionTitle}>Rescue Operations</div>
-                        <Link href="/dashboard/rescues" className={`${styles.item} ${isActive('/dashboard/rescues')}`} onClick={handleLinkClick}>
+                        <Link href="/dashboard/rescues" className={`${styles.item} ${isActive('/dashboard/rescues')}`}>
                             My Animals
                         </Link>
-                        <Link href="/dashboard/intake" className={`${styles.item} ${isActive('/dashboard/intake')}`} onClick={handleLinkClick}>
+                        <Link href="/dashboard/intake" className={`${styles.item} ${isActive('/dashboard/intake')}`}>
                             New Intake
                         </Link>
                     </>
@@ -59,10 +41,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 {(user.role === 'VET' || user.role === 'ADMIN') && (
                     <>
                         <div className={styles.sectionTitle}>Medical</div>
-                        <Link href="/dashboard/patients" className={`${styles.item} ${isActive('/dashboard/patients')}`} onClick={handleLinkClick}>
+                        <Link href="/dashboard/patients" className={`${styles.item} ${isActive('/dashboard/patients')}`}>
                             Patients
                         </Link>
-                        <Link href="/dashboard/appointments" className={`${styles.item} ${isActive('/dashboard/appointments')}`} onClick={handleLinkClick}>
+                        <Link href="/dashboard/appointments" className={`${styles.item} ${isActive('/dashboard/appointments')}`}>
                             Appointments
                         </Link>
                     </>
@@ -71,13 +53,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 {(user.role === 'ADMIN') && (
                     <>
                         <div className={styles.sectionTitle}>Administration</div>
-                        <Link href="/dashboard/users" className={`${styles.item} ${isActive('/dashboard/users')}`} onClick={handleLinkClick}>
+                        <Link href="/dashboard/users" className={`${styles.item} ${isActive('/dashboard/users')}`}>
                             User Management
                         </Link>
-                        <Link href="/dashboard/reports" className={`${styles.item} ${isActive('/dashboard/reports')}`} onClick={handleLinkClick}>
+                        <Link href="/dashboard/reports" className={`${styles.item} ${isActive('/dashboard/reports')}`}>
                             Platform Reports
                         </Link>
-                        <Link href="/dashboard/approvals" className={`${styles.item} ${isActive('/dashboard/approvals')}`} onClick={handleLinkClick}>
+                        <Link href="/dashboard/approvals" className={`${styles.item} ${isActive('/dashboard/approvals')}`}>
                             Adoption Approvals
                         </Link>
                     </>
@@ -86,10 +68,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 {(user.role === 'DONOR' || user.role === 'ADMIN') && (
                     <>
                         <div className={styles.sectionTitle}>Philanthropy</div>
-                        <Link href="/dashboard/donations" className={`${styles.item} ${isActive('/dashboard/donations')}`} onClick={handleLinkClick}>
+                        <Link href="/dashboard/donations" className={`${styles.item} ${isActive('/dashboard/donations')}`}>
                             My Donations
                         </Link>
-                        <Link href="/animals" className={`${styles.item} ${isActive('/animals')}`} onClick={handleLinkClick}>
+                        <Link href="/animals" className={`${styles.item} ${isActive('/animals')}`}>
                             Browse to Sponsor
                         </Link>
                     </>
@@ -97,10 +79,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
                 {/* Common for Everyone */}
                 <div className={styles.sectionTitle}>Account</div>
-                <Link href="/dashboard/profile" className={`${styles.item} ${isActive('/dashboard/profile')}`} onClick={handleLinkClick}>
+                <Link href="/dashboard/profile" className={`${styles.item} ${isActive('/dashboard/profile')}`}>
                     My Profile
                 </Link>
-                <Link href="/dashboard/settings" className={`${styles.item} ${isActive('/dashboard/settings')}`} onClick={handleLinkClick}>
+                <Link href="/dashboard/settings" className={`${styles.item} ${isActive('/dashboard/settings')}`}>
                     Settings
                 </Link>
             </div>
