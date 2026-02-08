@@ -61,7 +61,7 @@ export default function AnimalDetailsPage() {
                             <p className="text-subtle text-lg mt-2">{animal.breed} • {animal.location}</p>
                         </div>
                         <div className="text-right">
-                            <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--accent-color)' }}>${animal.fee}</div>
+                            <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--accent-color)' }}>₹{animal.fee}</div>
                             <div className="text-sm text-subtle">Adoption Fee</div>
                         </div>
                     </div>

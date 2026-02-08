@@ -65,7 +65,7 @@ export default function Home() {
               <p>Happy Adoptions</p>
             </div>
             <div className={styles.featureCard}>
-              <span className={styles.statNumber}>$50k</span>
+              <span className={styles.statNumber}>₹40L</span>
               <p>Funds Raised</p>
             </div>
           </div>
