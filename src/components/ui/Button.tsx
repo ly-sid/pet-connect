@@ -5,6 +5,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'outline' | 'danger' | 'ghost';
     size?: 'sm' | 'md' | 'lg';
     fullWidth?: boolean;
+    loading?: boolean;
 }
 
 export function Button({
@@ -12,7 +13,9 @@ export function Button({
     variant = 'primary',
     size = 'md',
     fullWidth = false,
+    loading = false,
     className = '',
+    disabled,
     ...props
 }: ButtonProps) {
     const rootClassName = [
@@ -24,8 +27,12 @@ export function Button({
     ].filter(Boolean).join(' ');
 
     return (
-        <button className={rootClassName} {...props}>
-            {children}
+        <button
+            className={rootClassName}
+            disabled={disabled || loading}
+            {...props}
+        >
+            {loading ? 'Sending...' : children}
         </button>
     );
 }
