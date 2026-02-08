@@ -231,3 +231,44 @@ button {
   padding-top: 2rem;
   padding-bottom: 2rem;
 }
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  :root {
+    --mobile-h1: 2rem;
+  }
+
+  h1 {
+    font-size: var(--mobile-h1);
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mobile-hide {
+    display: none !important;
+  }
+
+  .mobile-show {
+    display: block !important;
+  }
+
+  .mobile-full-width {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .desktop-hide {
+    display: none !important;
+  }
+}

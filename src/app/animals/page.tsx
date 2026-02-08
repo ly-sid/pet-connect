@@ -7,6 +7,7 @@ import { Animal } from '@/lib/types';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import styles from './animals.module.css';
 
 export default function AnimalSearchPage() {
     const [animals, setAnimals] = useState<Animal[]>([]);
@@ -41,8 +42,8 @@ export default function AnimalSearchPage() {
                 <p className="text-subtle">Browse our available pets and give them a forever home.</p>
             </div>
 
-            <div className="flex gap-4 mb-8 justify-center max-w-2xl mx-auto">
-                <div style={{ flex: 1 }}>
+            <div className={`flex gap-4 mb-8 justify-center max-w-2xl mx-auto ${styles.filterContainer}`}>
+                <div style={{ flex: 1, width: '100%' }}>
                     <Input
                         placeholder="Search by name or breed..."
                         value={search}
@@ -51,6 +52,7 @@ export default function AnimalSearchPage() {
                 </div>
                 <select
                     className="border rounded-md px-4 py-2"
+                    style={{ height: 'fit-content' }}
                     value={speciesFilter}
                     onChange={(e) => setSpeciesFilter(e.target.value)}
                 >
