@@ -23,11 +23,11 @@ export default function MarketplacePage() {
 
             <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
                 {PRODUCTS.map(product => (
-                    <Card key={product.id} padding="none">
+                    <Card key={product.id} padding="none" interactive>
                         <div style={{ height: '200px', backgroundColor: '#f3f4f6', backgroundImage: `url(${product.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                         <div className="p-4">
                             <h3 className="font-bold text-lg mb-1">{product.name}</h3>
-                            <p className="text-secondary mb-4">${product.price}.00</p>
+                            <p className="text-secondary mb-4">₹{product.price * 80}.00</p>
                             <Button fullWidth onClick={() => alert('Added to cart!')}>Add to Cart</Button>
                         </div>
                     </Card>

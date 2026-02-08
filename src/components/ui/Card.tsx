@@ -5,15 +5,17 @@ interface CardProps {
     children: React.ReactNode;
     className?: string;
     padding?: 'none' | 'sm' | 'md' | 'lg';
+    interactive?: boolean;
 }
 
 export function Card({
     children,
     className = '',
-    padding = 'md'
+    padding = 'md',
+    interactive = false
 }: CardProps) {
     return (
-        <div className={`${styles.card} ${styles['p-' + padding]} ${className}`}>
+        <div className={`${styles.card} ${styles['p-' + padding]} ${interactive ? styles.interactive : ''} ${className}`}>
             {children}
         </div>
     );

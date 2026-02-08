@@ -63,12 +63,12 @@ export default function AnimalSearchPage() {
             <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
                 {filtered.map(animal => (
                     <Link key={animal.id} href={`/animals/${animal.id}`}>
-                        <Card padding="none" className="h-full">
+                        <Card padding="none" className="h-full" interactive>
                             <div style={{ height: '240px', backgroundColor: '#e5e7eb', backgroundImage: `url(${animal.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                             <div className="p-4">
                                 <div className="flex justify-between items-center mb-1">
                                     <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{animal.name}</h3>
-                                    <span style={{ fontWeight: 600, color: 'var(--accent-color)' }}>${animal.fee}</span>
+                                    <span style={{ fontWeight: 600, color: 'var(--accent-color)' }}>₹{animal.fee}</span>
                                 </div>
                                 <p className="text-subtle text-sm mb-3">{animal.breed} • {animal.age} yrs • {animal.gender}</p>
                                 <Button fullWidth variant="outline">View Profile</Button>
