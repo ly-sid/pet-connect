@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { mockService } from '@/lib/mock-data';
+import { backendService } from '@/lib/backend-service';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -39,23 +39,28 @@ export default function IntakePage() {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
-        setTimeout(() => {
-            mockService.addAnimal({
+        try {
+            await backendService.addAnimal({
                 ...formData,
                 age: parseInt(formData.age) || 0,
                 fee: parseInt(formData.fee) || 0,
                 status: 'AVAILABLE',
-                images: [preview || 'https://source.unsplash.com/random/800x600/?pet,dog'],
-                gender: formData.gender as 'Male' | 'Female',
-                medicalHistory: []
+                images: [preview || 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=600&q=80'],
+                gender: formData.gender as 'Male' | 'Female'
             });
             router.push('/dashboard/rescues');
-        }, 1000);
+        } catch (error) {
+            console.error('Failed to save animal record:', error);
+            alert('Failed to save record.');
+        } finally {
+            setLoading(false);
+        }
     };
+
 
     return (
         <div className={styles.container}>

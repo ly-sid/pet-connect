@@ -7,19 +7,35 @@ import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card } from '@/components/ui/Card';
+import { Select } from '@/components/ui/Select';
 
 export default function RegisterPage() {
     const [name, setName] = useState('');
+
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { login } = useAuth();
+    const [role, setRole] = useState<any>('USER');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const { register } = useAuth();
     const router = useRouter();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        login(email, 'USER'); // Default to USER role on register
-        router.push('/dashboard');
+        setError('');
+        setLoading(true);
+        try {
+            await register(name, username, email, password, role);
+            router.push('/dashboard');
+        } catch (err: any) {
+            setError(err.message || 'Registration failed');
+        } finally {
+            setLoading(false);
+        }
     };
+
+
 
     return (
         <Card padding="lg">
@@ -28,6 +44,12 @@ export default function RegisterPage() {
                 <p className="text-subtle">Join the community to help animals</p>
             </div>
 
+            {error && (
+                <div style={{ padding: '0.75rem', marginBottom: '1rem', backgroundColor: '#fef2f2', border: '1px solid #fee2e2', color: '#b91c1c', borderRadius: '0.375rem', fontSize: '0.875rem' }}>
+                    {error}
+                </div>
+            )}
+
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <Input
                     label="Full Name"
@@ -35,6 +57,14 @@ export default function RegisterPage() {
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    required
+                />
+                <Input
+                    label="Username"
+                    type="text"
+                    placeholder="choose_a_username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     required
                 />
                 <Input
@@ -54,7 +84,21 @@ export default function RegisterPage() {
                     required
                 />
 
-                <Button type="submit" fullWidth className="mt-4">
+                <Select
+                    label="Select Role"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    options={[
+                        { value: 'USER', label: 'Standard User' },
+                        { value: 'VET', label: 'Veterinarian' },
+                        { value: 'RESCUE', label: 'Rescue Team' },
+                        { value: 'DONOR', label: 'Donor' },
+                    ]}
+                />
+
+
+
+                <Button type="submit" fullWidth loading={loading} className="mt-4">
                     Create Account
                 </Button>
             </form>

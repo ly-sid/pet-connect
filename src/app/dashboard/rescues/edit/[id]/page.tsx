@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { mockService } from '@/lib/mock-data';
+import { backendService } from '@/lib/backend-service';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -12,7 +12,8 @@ import styles from '../../../intake/Intake.module.css'; // Reuse styles
 export default function EditAnimalPage() {
     const router = useRouter();
     const { id } = useParams();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
     const [preview, setPreview] = useState<string | null>(null);
 
     const [formData, setFormData] = useState({
@@ -28,20 +29,30 @@ export default function EditAnimalPage() {
 
     useEffect(() => {
         if (typeof id === 'string') {
-            const animal = mockService.getAnimalById(id);
-            if (animal) {
-                setFormData({
-                    name: animal.name,
-                    species: animal.species,
-                    breed: animal.breed,
-                    age: animal.age.toString(),
-                    gender: animal.gender,
-                    location: 'Shelter 1', // Mock default
-                    description: 'Pre-existing description...',
-                    fee: animal.fee.toString()
-                });
-                setPreview(animal.images[0]);
-            }
+            const fetchAnimal = async () => {
+                setLoading(true);
+                try {
+                    const animal = await backendService.getAnimalById(id);
+                    if (animal) {
+                        setFormData({
+                            name: animal.name,
+                            species: animal.species,
+                            breed: animal.breed,
+                            age: animal.age.toString(),
+                            gender: animal.gender,
+                            location: animal.location,
+                            description: animal.description,
+                            fee: animal.fee.toString()
+                        });
+                        setPreview(animal.images[0]);
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch animal details:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchAnimal();
         }
     }, [id]);
 
@@ -59,26 +70,32 @@ export default function EditAnimalPage() {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
+        setSubmitting(true);
 
-        if (typeof id === 'string') {
-            mockService.updateAnimal(id, {
-                ...formData,
-                gender: formData.gender as "Male" | "Female",
-                age: parseInt(formData.age) || 0,
-                fee: parseInt(formData.fee) || 0,
-                // Preserve existing images if no new one
-                images: preview ? [preview] : undefined
-            });
+        try {
+            if (typeof id === 'string') {
+                await backendService.updateAnimal(id, {
+                    ...formData,
+                    gender: formData.gender as "Male" | "Female",
+                    age: parseInt(formData.age) || 0,
+                    fee: parseInt(formData.fee) || 0,
+                    // Preserve existing image or use new preview
+                    images: preview ? [preview] : undefined
+                });
+                alert('Animal details updated successfully!');
+                router.push('/dashboard/rescues');
+            }
+        } catch (error) {
+            console.error('Failed to update animal:', error);
+            alert('Failed to update record.');
+        } finally {
+            setSubmitting(false);
         }
-
-        setTimeout(() => {
-            alert('Animal details updated successfully!');
-            router.push('/dashboard/rescues');
-        }, 500);
     };
+
+    if (loading) return <div className="container py-12 text-center text-subtle">Loading animal details...</div>;
 
     return (
         <div className={styles.container}>
@@ -91,8 +108,8 @@ export default function EditAnimalPage() {
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline" onClick={() => router.back()}>Cancel</Button>
-                    <Button onClick={handleSubmit} disabled={loading}>
-                        {loading ? 'Saving...' : 'Save Changes'}
+                    <Button onClick={handleSubmit} loading={submitting}>
+                        Save Changes
                     </Button>
                 </div>
             </div>

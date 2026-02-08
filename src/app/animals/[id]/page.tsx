@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { mockService } from '@/lib/mock-data';
+import { backendService } from '@/lib/backend-service';
 import { Animal } from '@/lib/types';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -13,31 +13,49 @@ export default function AnimalDetailsPage() {
     const router = useRouter();
     const { user } = useAuth();
     const [animal, setAnimal] = useState<Animal | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         if (typeof id === 'string') {
-            const found = mockService.getAnimalById(id);
-            setAnimal(found || null);
+            const fetchAnimal = async () => {
+                setLoading(true);
+                try {
+                    const data = await backendService.getAnimalById(id);
+                    setAnimal(data);
+                } catch (error) {
+                    console.error('Failed to fetch animal details:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchAnimal();
         }
     }, [id]);
 
-    const handleAdopt = () => {
+    const handleAdopt = async () => {
         if (!user) {
             router.push('/login');
             return;
         }
-        // Simulate adoption request
-        mockService.submitAdoptionRequest({
-            animalId: animal!.id,
-            userId: user.id,
-            userName: user.name,
-            message: "I would like to adopt this pet."
-        });
-        alert('Adoption request submitted! Wait for admin approval.');
-        router.push('/dashboard');
+
+        setSubmitting(true);
+        try {
+            await backendService.submitAdoptionRequest({
+                animalId: animal!.id,
+                message: "I would like to adopt this pet."
+            });
+            alert('Adoption request submitted! Wait for admin approval.');
+            router.push('/dashboard');
+        } catch (error) {
+            alert('Failed to submit adoption request.');
+        } finally {
+            setSubmitting(false);
+        }
     };
 
-    if (!animal) return <div className="container py-12 text-center">Loading...</div>;
+    if (loading) return <div className="container py-12 text-center">Loading...</div>;
+    if (!animal) return <div className="container py-12 text-center">Animal not found.</div>;
 
     return (
         <div className="container py-12">
@@ -89,7 +107,7 @@ export default function AnimalDetailsPage() {
                     </div>
 
                     <div className="flex gap-4">
-                        <Button size="lg" fullWidth onClick={handleAdopt}>Adopt {animal.name}</Button>
+                        <Button size="lg" fullWidth loading={submitting} onClick={handleAdopt}>Adopt {animal.name}</Button>
                         <Button size="lg" variant="outline">Sponsor</Button>
                     </div>
                 </div>

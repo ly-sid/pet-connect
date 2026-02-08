@@ -5,7 +5,8 @@ import { User, UserRole } from './types';
 
 interface AuthContextType {
     user: User | null;
-    login: (email: string, role: UserRole) => void;
+    login: (username: string, password: string) => Promise<void>;
+    register: (name: string, username: string, email: string, password: string, role: UserRole) => Promise<void>;
     logout: () => void;
     isAuthenticated: boolean;
 }
@@ -23,26 +24,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }, []);
 
-    const login = (email: string, role: UserRole) => {
-        // Mock login logic
-        const newUser: User = {
-            id: 'u_' + Math.random().toString(36).substr(2, 9),
-            name: email.split('@')[0],
-            email,
-            role,
-            avatar: `https://ui-avatars.com/api/?name=${email.split('@')[0]}&background=random`
-        };
-        setUser(newUser);
-        localStorage.setItem('pet_connect_user', JSON.stringify(newUser));
+    const login = async (username: string, password: string) => {
+        const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ username, password }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Login failed');
+
+        setUser(data.user);
+        localStorage.setItem('pet_connect_user', JSON.stringify(data.user));
     };
+
+    const register = async (name: string, username: string, email: string, password: string, role: UserRole) => {
+        const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            body: JSON.stringify({ name, username, email, password, role }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Registration failed');
+
+        // Auto-login after registration
+        await login(username, password);
+    };
+
 
     const logout = () => {
         setUser(null);
         localStorage.removeItem('pet_connect_user');
+        // Clear cookie by calling a logout endpoint or just client-side if it's not strictly httpOnly
+        // Ideally call /api/auth/logout to clear server-side cookie
     };
 
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+        <AuthContext.Provider value={{ user, login, register, logout, isAuthenticated: !!user }}>
             {children}
         </AuthContext.Provider>
     );

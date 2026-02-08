@@ -4,14 +4,41 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { backendService } from '@/lib/backend-service';
+import { useAuth } from '@/lib/auth-context';
+import { useRouter } from 'next/navigation';
 
 export default function DonatePage() {
+    const { user } = useAuth();
+    const router = useRouter();
     const [amount, setAmount] = useState('50');
     const [type, setType] = useState<'ONE_TIME' | 'MONTHLY'>('ONE_TIME');
+    const [loading, setLoading] = useState(false);
 
-    const handleDonate = () => {
-        alert(`Thank you for your ${type === 'MONTHLY' ? 'monthly' : ''} donation of ₹${amount}!`);
+    const handleDonate = async () => {
+        if (!user) {
+            router.push('/login');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await backendService.addDonation({
+                amount: parseFloat(amount),
+                type,
+                targetRaw: 'General Fund',
+                message: `Donation from ${user.name}`
+            });
+            alert(`Thank you for your ${type === 'MONTHLY' ? 'monthly' : ''} donation of ₹${amount}!`);
+            router.push('/dashboard/donations');
+        } catch (error) {
+            console.error('Failed to donate:', error);
+            alert('Failed to process donation.');
+        } finally {
+            setLoading(false);
+        }
     };
+
 
     return (
         <div className="container py-12 max-w-4xl mx-auto">
@@ -69,9 +96,10 @@ export default function DonatePage() {
                         </div>
                     </div>
 
-                    <Button size="lg" fullWidth onClick={handleDonate}>
+                    <Button size="lg" fullWidth onClick={handleDonate} loading={loading}>
                         Donate ₹{amount}
                     </Button>
+
 
                     <p className="text-xs text-center mt-4 text-subtle">
                         Secure payment processing. All donations are tax-deductible.

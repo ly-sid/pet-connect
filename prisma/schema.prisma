@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  RESCUE
+  VET
+  USER
+  DONOR
+  ADVERTISER
+}
+
+enum Status {
+  AVAILABLE
+  ADOPTED
+  PENDING
+  RESCUED
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum DonationType {
+  ONE_TIME
+  MONTHLY
+}
+
+model User {
+  id               String            @id @default(uuid())
+  email            String            @unique
+  username         String            @unique
+  password         String
+  name             String
+  role             Role              @default(USER)
+  avatar           String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  adoptionRequests AdoptionRequest[]
+  donations        Donation[]
+  boardingBookings BoardingBooking[]
+}
+
+
+model Animal {
+  id             String          @id @default(uuid())
+  name           String
+  species        String
+  breed          String
+  age            Int
+  gender         String
+  location       String
+  description    String          @db.Text
+  fee            Float
+  status         Status          @default(AVAILABLE)
+  images         Json            // Array of image URLs
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  medicalRecords MedicalRecord[]
+  adoptionRequests AdoptionRequest[]
+}
+
+model AdoptionRequest {
+  id              String        @id @default(uuid())
+  animalId        String
+  userId          String
+  message         String        @db.Text
+  status          RequestStatus @default(PENDING)
+  applicationDate DateTime      @default(now())
+  animal          Animal        @relation(fields: [animalId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
+}
+
+model MedicalRecord {
+  id               String   @id @default(uuid())
+  animalId         String
+  date             DateTime @default(now())
+  diagnosis        String   @db.Text
+  treatment        String   @db.Text
+  veterinarianName String
+  animal           Animal   @relation(fields: [animalId], references: [id])
+}
+
+model Donation {
+  id        String       @id @default(uuid())
+  userId    String
+  amount    Float
+  message   String?      @db.Text
+  date      DateTime     @default(now())
+  type      DonationType @default(ONE_TIME)
+  targetRaw String?      // "General" or Animal Name
+  user      User         @relation(fields: [userId], references: [id])
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Float
+  image     String
+  createdAt DateTime @default(now())
+}
+
+model BoardingBooking {
+  id           String   @id @default(uuid())
+  userId       String
+  date         DateTime
+  type         String   // Overnight, Daycare
+  petName      String
+  instructions String?  @db.Text
+  user         User     @relation(fields: [userId], references: [id])
+}

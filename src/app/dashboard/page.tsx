@@ -1,13 +1,35 @@
 "use client";
 
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { Card } from '@/components/ui/Card';
 import { CountUp } from '@/components/ui/CountUp';
+import { backendService } from '@/lib/backend-service';
 
 export default function DashboardPage() {
     const { user } = useAuth();
+    const [stats, setStats] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (user) {
+            const fetchStats = async () => {
+                try {
+                    const data = await backendService.getDashboardStats();
+                    setStats(data);
+                } catch (error) {
+                    console.error('Failed to fetch dashboard stats:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchStats();
+        }
+    }, [user]);
 
     if (!user) return <div className="text-center p-8">Please log in to view your dashboard.</div>;
+
+    if (loading) return <div className="container py-8">Loading dashboard...</div>;
 
     return (
         <div>
@@ -19,40 +41,40 @@ export default function DashboardPage() {
             <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
 
                 {/* Dynamic Cards based on Role */}
-                {user.role === 'ADMIN' && (
+                {user.role === 'ADMIN' && stats && (
                     <>
-                        <StatsCard title="Pending Approvals" value="12" label="Adoption requests waiting" />
-                        <StatsCard title="Total Animals" value="256" label="Across all rescues" />
-                        <StatsCard title="Platform Revenue" value="₹4,50,000" label="Donations this month" />
+                        <StatsCard title="Pending Approvals" value={stats.pendingApprovals?.toString() || '0'} label="Adoption requests waiting" />
+                        <StatsCard title="Total Animals" value={stats.totalAnimals?.toString() || '0'} label="Across all rescues" />
+                        <StatsCard title="Platform Revenue" value={`₹${stats.platformRevenue?.toLocaleString() || '0'}`} label="Total donations collected" />
                     </>
                 )}
 
-                {user.role === 'RESCUE' && (
+                {user.role === 'RESCUE' && stats && (
                     <>
-                        <StatsCard title="Active Listings" value="8" label="Animals looking for homes" />
-                        <StatsCard title="Pending Inquiries" value="3" label="Potential adopters" />
+                        <StatsCard title="Active Listings" value={stats.activeListings?.toString() || '0'} label="Animals looking for homes" />
+                        <StatsCard title="Pending Inquiries" value={stats.pendingInquiries?.toString() || '0'} label="Potential adopters" />
                     </>
                 )}
 
                 {user.role === 'VET' && (
                     <>
-                        <StatsCard title="Appointments" value="4" label="Scheduled for today" />
-                        <StatsCard title="Critical Cases" value="1" label="Needs attention" />
+                        <StatsCard title="Appointments" value="0" label="Scheduled for today" />
+                        <StatsCard title="Critical Cases" value="0" label="Needs attention" />
                     </>
                 )}
 
-                {user.role === 'USER' && (
+                {user.role === 'USER' && stats && (
                     <>
-                        <StatsCard title="My Applications" value="1" label="Pending review" />
-                        <StatsCard title="Favorites" value="5" label="Saved animals" />
+                        <StatsCard title="My Applications" value={stats.myApplications?.toString() || '0'} label="Applications submitted" />
+                        <StatsCard title="Favorites" value="0" label="Saved animals" />
                     </>
                 )}
 
-                {user.role === 'DONOR' && (
+                {user.role === 'DONOR' && stats && (
                     <>
-                        <StatsCard title="Total Contributed" value="₹1,25,000" label="Lifetime donations" />
-                        <StatsCard title="Active Sponsorships" value="2" label="Animals supported monthly" />
-                        <StatsCard title="Impact" value="15" label="Animals helped" />
+                        <StatsCard title="Total Contributed" value={`₹${stats.totalContributed?.toLocaleString() || '0'}`} label="Lifetime donations" />
+                        <StatsCard title="Active Sponsorships" value="0" label="Animals supported monthly" />
+                        <StatsCard title="Impact" value={stats.impactCount?.toString() || '0'} label="Donations made" />
                     </>
                 )}
 
@@ -63,7 +85,7 @@ export default function DashboardPage() {
 
 function StatsCard({ title, value, label }: { title: string, value: string, label: string }) {
     // Parse value for animation (e.g., "₹4,50,000" -> prefix: "₹", number: 450000)
-    const match = value.match(/^([^0-9]*)([\d,]+)(.*)$/);
+    const match = value.match(/^([^0-9\-\.]*)([\d,]+)(.*)$/);
     const prefix = match ? match[1] : '';
     const numericValue = match ? parseInt(match[2].replace(/,/g, ''), 10) : 0;
     const suffix = match ? match[3] : '';

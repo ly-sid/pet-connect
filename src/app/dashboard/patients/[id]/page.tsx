@@ -2,45 +2,65 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { mockService } from '@/lib/mock-data';
+import { backendService } from '@/lib/backend-service';
 import { Animal, MedicalRecord } from '@/lib/types';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { useAuth } from '@/lib/auth-context';
 
 export default function MedicalRecordPage() {
     const { id } = useParams();
     const router = useRouter();
+    const { user } = useAuth();
     const [animal, setAnimal] = useState<Animal | null>(null);
+    const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [newRecord, setNewRecord] = useState({ diagnosis: '', treatment: '' });
+    const [submitting, setSubmitting] = useState(false);
 
-    useEffect(() => {
+    const fetchAnimal = async () => {
         if (typeof id === 'string') {
-            setAnimal(mockService.getAnimalById(id) || null);
+            setLoading(true);
+            try {
+                const data = await backendService.getAnimalById(id);
+                setAnimal(data);
+            } catch (error) {
+                console.error('Failed to fetch animal medical record:', error);
+            } finally {
+                setLoading(false);
+            }
         }
-    }, [id]);
-
-    const handleAddRecord = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!animal) return;
-
-        // Direct mutation of mock object for demo simplicity
-        // In real app, call service method
-        const record: MedicalRecord = {
-            id: Math.random().toString(36).substr(2, 9),
-            date: new Date().toISOString().split('T')[0],
-            diagnosis: newRecord.diagnosis,
-            treatment: newRecord.treatment,
-            veterinarianName: 'Dr. Current User'
-        };
-
-        animal.medicalHistory.push(record);
-        setShowForm(false);
-        setNewRecord({ diagnosis: '', treatment: '' });
     };
 
-    if (!animal) return <div>Loading...</div>;
+    useEffect(() => {
+        fetchAnimal();
+    }, [id]);
+
+    const handleAddRecord = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!animal || !user) return;
+
+        setSubmitting(true);
+        try {
+            await backendService.addMedicalRecord({
+                animalId: animal.id,
+                diagnosis: newRecord.diagnosis,
+                treatment: newRecord.treatment,
+                veterinarianName: user.name
+            });
+            setShowForm(false);
+            setNewRecord({ diagnosis: '', treatment: '' });
+            fetchAnimal(); // Refresh
+        } catch (error) {
+            alert('Failed to save record.');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    if (loading) return <div className="container py-12 text-center">Loading...</div>;
+    if (!animal) return <div className="container py-12 text-center">Record not found.</div>;
 
     return (
         <div>
@@ -50,7 +70,9 @@ export default function MedicalRecordPage() {
                     <h1 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Medical Record: {animal.name}</h1>
                     <p className="text-subtle">ID: {animal.id} • {animal.species} • {animal.age} yrs</p>
                 </div>
-                <Button onClick={() => setShowForm(!showForm)}>{showForm ? 'Cancel' : '+ Add Diagnosis'}</Button>
+                {(user?.role === 'VET' || user?.role === 'ADMIN') && (
+                    <Button onClick={() => setShowForm(!showForm)}>{showForm ? 'Cancel' : '+ Add Diagnosis'}</Button>
+                )}
             </div>
 
             <div className="grid gap-6">
@@ -71,21 +93,21 @@ export default function MedicalRecordPage() {
                                 required
                             />
                             <div className="flex justify-end">
-                                <Button type="submit">Save Record</Button>
+                                <Button type="submit" loading={submitting}>Save Record</Button>
                             </div>
                         </form>
                     </Card>
                 )}
 
                 <div className="flex flex-col gap-4">
-                    {animal.medicalHistory.length === 0 ? (
+                    {(!animal.medicalHistory || animal.medicalHistory.length === 0) ? (
                         <div className="text-center py-8 text-subtle bg-gray-50 rounded-lg">No medical history recorded yet.</div>
                     ) : (
-                        animal.medicalHistory.map(record => (
+                        animal.medicalHistory.map((record: any) => (
                             <Card key={record.id} padding="md">
                                 <div className="flex justify-between mb-2">
                                     <div className="font-bold text-lg">{record.diagnosis}</div>
-                                    <div className="text-sm text-subtle">{record.date}</div>
+                                    <div className="text-sm text-subtle">{new Date(record.date).toLocaleDateString()}</div>
                                 </div>
                                 <p className="mb-4 text-secondary">{record.treatment}</p>
                                 <div className="text-xs font-medium text-subtle uppercase tracking-wide">

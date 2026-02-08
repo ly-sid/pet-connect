@@ -10,18 +10,27 @@ import { Card } from '@/components/ui/Card';
 import { UserRole } from '@/lib/types';
 
 export default function LoginPage() {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState<UserRole>('USER'); // For demo purposes, allow selecting role
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const router = useRouter();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Simulate login
-        login(email, role);
-        router.push('/dashboard');
+        setError('');
+        setLoading(true);
+        try {
+            await login(username, password);
+            router.push('/dashboard');
+        } catch (err: any) {
+            setError(err.message || 'Login failed');
+        } finally {
+            setLoading(false);
+        }
     };
+
 
     return (
         <Card padding="lg">
@@ -30,13 +39,19 @@ export default function LoginPage() {
                 <p className="text-subtle">Enter your credentials to access your account</p>
             </div>
 
+            {error && (
+                <div style={{ padding: '0.75rem', marginBottom: '1rem', backgroundColor: '#fef2f2', border: '1px solid #fee2e2', color: '#b91c1c', borderRadius: '0.375rem', fontSize: '0.875rem' }}>
+                    {error}
+                </div>
+            )}
+
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <Input
-                    label="Email Address"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    label="Username"
+                    type="text"
+                    placeholder="Enter your username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     required
                 />
                 <Input
@@ -48,27 +63,7 @@ export default function LoginPage() {
                     required
                 />
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <label style={{ fontSize: '0.875rem', fontWeight: 500 }}>Select Role (Demo Only)</label>
-                    <select
-                        value={role}
-                        onChange={(e) => setRole(e.target.value as UserRole)}
-                        style={{
-                            padding: '0.625rem',
-                            borderRadius: '0.375rem',
-                            border: '1px solid var(--border-subtle)',
-                            fontFamily: 'inherit'
-                        }}
-                    >
-                        <option value="USER">Public User</option>
-                        <option value="ADMIN">Administrator</option>
-                        <option value="RESCUE">Rescue Team</option>
-                        <option value="VET">Veterinarian</option>
-                        <option value="DONOR">Donor</option>
-                    </select>
-                </div>
-
-                <Button type="submit" fullWidth className="mt-4">
+                <Button type="submit" fullWidth loading={loading} className="mt-4">
                     Sign In
                 </Button>
             </form>
