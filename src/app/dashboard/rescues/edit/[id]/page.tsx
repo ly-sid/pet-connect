@@ -62,11 +62,18 @@ export default function EditAnimalPage() {
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File size must be less than 5MB");
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = (ev) => {
                 if (ev.target?.result) setPreview(ev.target.result as string);
             };
-            reader.readAsDataURL(e.target.files[0]);
+            reader.readAsDataURL(file);
         }
     };
 
