@@ -20,6 +20,11 @@ class BackendService {
             body: JSON.stringify(animal),
             headers: { 'Content-Type': 'application/json' }
         });
+        if (!res.ok) {
+            const text = await res.text();
+            console.error('Failed to add animal:', text);
+            throw new Error(`Failed to add animal: ${res.status} ${res.statusText}`);
+        }
         return res.json();
     }
 
@@ -29,6 +34,11 @@ class BackendService {
             body: JSON.stringify(data),
             headers: { 'Content-Type': 'application/json' }
         });
+        if (!res.ok) {
+            const text = await res.text();
+            console.error('Failed to update animal:', text);
+            throw new Error(`Failed to update animal: ${res.status} ${res.statusText}`);
+        }
         return res.json();
     }
 
