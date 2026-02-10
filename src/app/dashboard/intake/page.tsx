@@ -29,13 +29,22 @@ export default function IntakePage() {
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Simulate image preview
         if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+
+            // Limit file size to 5MB
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File size must be less than 5MB");
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = (ev) => {
-                if (ev.target?.result) setPreview(ev.target.result as string);
+                if (ev.target?.result) {
+                    setPreview(ev.target.result as string);
+                }
             };
-            reader.readAsDataURL(e.target.files[0]);
+            reader.readAsDataURL(file);
         }
     };
 
@@ -44,18 +53,22 @@ export default function IntakePage() {
         setLoading(true);
 
         try {
+            // Use the base64 preview string if available, otherwise use a placeholder
+            const imageToUpload = preview || 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=600&q=80';
+
             await backendService.addAnimal({
                 ...formData,
                 age: parseInt(formData.age) || 0,
                 fee: parseInt(formData.fee) || 0,
                 status: 'AVAILABLE',
-                images: [preview || 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=600&q=80'],
+                images: [imageToUpload],
                 gender: formData.gender as 'Male' | 'Female'
             });
+            alert('Animal record saved successfully!');
             router.push('/dashboard/rescues');
         } catch (error) {
             console.error('Failed to save animal record:', error);
-            alert('Failed to save record.');
+            alert('Failed to save record. Please try again.');
         } finally {
             setLoading(false);
         }
