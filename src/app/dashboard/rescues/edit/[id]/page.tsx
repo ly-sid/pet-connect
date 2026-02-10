@@ -16,6 +16,8 @@ export default function EditAnimalPage() {
     const [submitting, setSubmitting] = useState(false);
     const [preview, setPreview] = useState<string | null>(null);
 
+    const [isAdopted, setIsAdopted] = useState(false);
+
     const [formData, setFormData] = useState({
         name: '',
         species: 'Dog',
@@ -45,6 +47,7 @@ export default function EditAnimalPage() {
                             fee: animal.fee.toString()
                         });
                         setPreview(animal.images[0]);
+                        setIsAdopted(animal.status === 'ADOPTED');
                     }
                 } catch (error) {
                     console.error('Failed to fetch animal details:', error);
@@ -115,22 +118,37 @@ export default function EditAnimalPage() {
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline" onClick={() => router.back()}>Cancel</Button>
-                    <Button onClick={handleSubmit} loading={submitting}>
-                        Save Changes
-                    </Button>
+                    {!isAdopted && (
+                        <Button onClick={handleSubmit} loading={submitting}>
+                            Save Changes
+                        </Button>
+                    )}
                 </div>
             </div>
+
+            {isAdopted && (
+                <div className="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-lg text-blue-800 flex items-center gap-3">
+                    <div className="bg-blue-100 p-2 rounded-full">ⓘ</div>
+                    <div>
+                        <p className="font-medium">This animal has been happily adopted! 🎉</p>
+                        <p className="text-sm text-blue-600">To preserve historical records, editing details is disabled. You can still view medical records.</p>
+                    </div>
+                </div>
+            )}
 
             <form className={styles.grid}>
                 {/* Left Column: Media & Core ID */}
                 <div className={styles.imageSection}>
                     <Card padding="none" className={styles.imageUpload}>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            className="absolute inset-0 opacity-0 cursor-pointer"
-                            onChange={handleImageChange}
-                        />
+                        {!isAdopted && (
+                            <input
+                                type="file"
+                                accept="image/*"
+                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                onChange={handleImageChange}
+                                disabled={isAdopted}
+                            />
+                        )}
                         {preview ? (
                             <img src={preview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
@@ -146,11 +164,18 @@ export default function EditAnimalPage() {
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
+                                disabled={isAdopted}
                             />
 
                             <div className="flex flex-col gap-1">
                                 <label className="text-sm font-medium">Species</label>
-                                <select name="species" value={formData.species} onChange={handleChange} className={styles.select}>
+                                <select
+                                    name="species"
+                                    value={formData.species}
+                                    onChange={handleChange}
+                                    className={styles.select}
+                                    disabled={isAdopted}
+                                >
                                     <option value="Dog">Dog</option>
                                     <option value="Cat">Cat</option>
                                     <option value="Bird">Bird</option>
@@ -163,6 +188,7 @@ export default function EditAnimalPage() {
                                 name="breed"
                                 value={formData.breed}
                                 onChange={handleChange}
+                                disabled={isAdopted}
                             />
                         </div>
                     </Card>
@@ -179,10 +205,17 @@ export default function EditAnimalPage() {
                                 type="number"
                                 value={formData.age}
                                 onChange={handleChange}
+                                disabled={isAdopted}
                             />
                             <div className="flex flex-col gap-1">
                                 <label className="text-sm font-medium">Gender</label>
-                                <select name="gender" value={formData.gender} onChange={handleChange} className={styles.select}>
+                                <select
+                                    name="gender"
+                                    value={formData.gender}
+                                    onChange={handleChange}
+                                    className={styles.select}
+                                    disabled={isAdopted}
+                                >
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                 </select>
@@ -198,6 +231,7 @@ export default function EditAnimalPage() {
                                 name="location"
                                 value={formData.location}
                                 onChange={handleChange}
+                                disabled={isAdopted}
                             />
 
                             <div className="flex flex-col gap-1">
@@ -207,6 +241,7 @@ export default function EditAnimalPage() {
                                     className={styles.textarea}
                                     value={formData.description}
                                     onChange={handleChange}
+                                    disabled={isAdopted}
                                 />
                             </div>
                         </div>
@@ -220,6 +255,7 @@ export default function EditAnimalPage() {
                             type="number"
                             value={formData.fee}
                             onChange={handleChange}
+                            disabled={isAdopted}
                         />
                     </Card>
                 </div>
