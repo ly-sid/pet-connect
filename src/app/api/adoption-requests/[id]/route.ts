@@ -28,17 +28,46 @@ export async function PATCH(
         const body = await req.json();
         const { status } = body;
 
+        // Fetch the request first to get userId and animal details
+        const existingRequest = await prisma.adoptionRequest.findUnique({
+            where: { id },
+            include: { animal: true, user: true }
+        });
+
+        if (!existingRequest) {
+            return NextResponse.json({ error: 'Request not found' }, { status: 404 });
+        }
+
         const request = await prisma.adoptionRequest.update({
             where: { id },
             data: { status },
             include: { animal: true }
         });
 
-        // If approved, update animal status
+        // Generate Notification
         if (status === 'APPROVED') {
+            await prisma.notification.create({
+                data: {
+                    userId: existingRequest.userId,
+                    title: 'Adoption Request Approved! 🎉',
+                    message: `Congratulations! Your request to adopt ${existingRequest.animal.name} has been approved. The rescue team will contact you shortly.`,
+                    type: 'success'
+                }
+            });
+
+            // Update animal status
             await prisma.animal.update({
-                where: { id: request.animalId },
+                where: { id: existingRequest.animalId },
                 data: { status: 'ADOPTED' }
+            });
+        } else if (status === 'REJECTED') {
+            await prisma.notification.create({
+                data: {
+                    userId: existingRequest.userId,
+                    title: 'Update on Your Adoption Request',
+                    message: `We're sorry to inform you that your request to adopt ${existingRequest.animal.name} was not approved at this time.`,
+                    type: 'info' // Or 'warning'/error depending on UI preference
+                }
             });
         }
 

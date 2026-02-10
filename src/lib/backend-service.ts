@@ -95,6 +95,12 @@ class BackendService {
         const res = await fetch('/api/dashboard/stats');
         return res.json();
     }
+
+    // Notification Methods
+    async getNotifications() {
+        const res = await fetch('/api/notifications');
+        return res.json();
+    }
 }
 
 

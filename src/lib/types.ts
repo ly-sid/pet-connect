@@ -51,3 +51,13 @@ export interface Donation {
     type: 'ONE_TIME' | 'MONTHLY';
     targetRaw?: string; // "General" or Animal Name
 }
+
+export interface Notification {
+    id: string;
+    userId: string;
+    title: string;
+    message: string;
+    type: 'success' | 'info' | 'warning' | 'error';
+    read: boolean;
+    createdAt: string;
+}
