@@ -87,27 +87,27 @@ export default function RescuesPage() {
 
                     {/* Adopted Section - Collapsible */}
                     {adoptedAnimals.length > 0 && (
-                        <section className="bg-green-50 rounded-xl p-6 border border-green-100">
-                            <button
+                        <div className="mt-12">
+                            <div
                                 onClick={() => setShowAdopted(!showAdopted)}
-                                className="w-full flex justify-between items-center text-left focus:outline-none"
+                                className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow flex justify-between items-center"
                             >
                                 <div>
-                                    <h2 className="text-xl font-bold text-green-800 flex items-center gap-2">
+                                    <h2 className="text-xl font-bold flex items-center gap-2">
                                         Happily Adopted
-                                        <span className="text-sm font-normal text-white px-2 py-0.5 bg-green-600 rounded-full">{adoptedAnimals.length}</span>
+                                        <span className="text-sm font-normal text-white px-2 py-0.5 bg-green-500 rounded-full">{adoptedAnimals.length}</span>
                                     </h2>
-                                    <p className="text-green-600 text-sm mt-1">
+                                    <p className="text-subtle text-sm mt-1">
                                         {showAdopted ? "Validating our mission, one adoption at a time." : "Click to view our success stories."}
                                     </p>
                                 </div>
-                                <span className="text-green-700 font-bold text-xl">
+                                <span className="text-gray-400 font-bold text-xl">
                                     {showAdopted ? '−' : '+'}
                                 </span>
-                            </button>
+                            </div>
 
                             {showAdopted && (
-                                <div className="grid mt-6 animate-in fade-in slide-in-from-top-2 duration-300" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+                                <div className="grid mt-8 animate-in fade-in slide-in-from-top-2 duration-300" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
                                     {adoptedAnimals
                                         .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
                                         .map((animal) => (
@@ -123,7 +123,7 @@ export default function RescuesPage() {
                                                             backgroundColor: '#10b981',
                                                             color: 'white'
                                                         }}>
-                                                            {new Date(animal.updatedAt).toLocaleDateString()}
+                                                            Adopted on {new Date(animal.updatedAt).toLocaleDateString()}
                                                         </span>
                                                     </div>
                                                     <p className="text-subtle text-sm mb-4">{animal.breed} • {animal.age} years</p>
@@ -140,7 +140,7 @@ export default function RescuesPage() {
                                         ))}
                                 </div>
                             )}
-                        </section>
+                        </div>
                     )}
                 </div>
             )}
