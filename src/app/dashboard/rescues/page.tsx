@@ -42,9 +42,9 @@ export default function RescuesPage() {
             {loading ? (
                 <div className="text-center py-12 text-subtle">Loading animals...</div>
             ) : (
-                <div className="flex flex-col gap-12">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
                     {/* Available Section */}
-                    <section>
+                    <section className={adoptedAnimals.length > 0 ? "lg:col-span-3" : "py-4 lg:col-span-4"}>
                         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                             Available for Adoption
                             <span className="text-sm font-normal text-subtle px-2 py-0.5 bg-gray-100 rounded-full">{availableAnimals.length}</span>
@@ -85,54 +85,42 @@ export default function RescuesPage() {
                         )}
                     </section>
 
-                    {/* Adopted Section - Collapsible */}
+                    {/* Adopted Section - Sidebar */}
                     {adoptedAnimals.length > 0 && (
-                        <div className="mt-12">
+                        <div className="lg:col-span-1 border-l pl-8 border-gray-100 min-h-[500px]">
                             <div
                                 onClick={() => setShowAdopted(!showAdopted)}
-                                className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow flex justify-between items-center"
+                                className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow mb-4"
                             >
-                                <div>
-                                    <h2 className="text-xl font-bold flex items-center gap-2">
-                                        Happily Adopted
-                                        <span className="text-sm font-normal text-white px-2 py-0.5 bg-green-500 rounded-full">{adoptedAnimals.length}</span>
-                                    </h2>
-                                    <p className="text-subtle text-sm mt-1">
-                                        {showAdopted ? "Validating our mission, one adoption at a time." : "Click to view our success stories."}
-                                    </p>
+                                <div className="flex justify-between items-center mb-2">
+                                    <h2 className="text-lg font-bold text-gray-800">Happily Adopted</h2>
+                                    <span className="text-xs font-bold text-white px-2 py-0.5 bg-green-500 rounded-full">{adoptedAnimals.length}</span>
                                 </div>
-                                <span className="text-gray-400 font-bold text-xl">
-                                    {showAdopted ? '−' : '+'}
-                                </span>
+                                <p className="text-subtle text-xs">
+                                    {showAdopted ? "Click to collapse list." : "Click to view success stories."}
+                                </p>
                             </div>
 
                             {showAdopted && (
-                                <div className="grid mt-8 animate-in fade-in slide-in-from-top-2 duration-300" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+                                <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
                                     {adoptedAnimals
                                         .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
                                         .map((animal) => (
-                                            <Card key={animal.id} padding="none" className="opacity-90 hover:opacity-100 transition-opacity bg-white">
-                                                <div style={{ height: '200px', backgroundColor: '#e5e7eb', backgroundImage: `url(${animal.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(100%)' }} />
-                                                <div className="p-4">
-                                                    <div className="flex justify-between items-start mb-2">
-                                                        <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{animal.name}</h3>
-                                                        <span style={{
-                                                            fontSize: '0.75rem',
-                                                            padding: '0.25rem 0.5rem',
-                                                            borderRadius: '1rem',
-                                                            backgroundColor: '#10b981',
-                                                            color: 'white'
-                                                        }}>
-                                                            Adopted on {new Date(animal.updatedAt).toLocaleDateString()}
+                                            <Card key={animal.id} padding="none" className="opacity-75 hover:opacity-100 transition-opacity bg-white">
+                                                <div style={{ height: '120px', backgroundColor: '#e5e7eb', backgroundImage: `url(${animal.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(100%)' }} />
+                                                <div className="p-3">
+                                                    <div className="flex justify-between items-start">
+                                                        <div>
+                                                            <h3 className="font-bold text-sm">{animal.name}</h3>
+                                                            <p className="text-xs text-subtle">{animal.breed}</p>
+                                                        </div>
+                                                        <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+                                                            {new Date(animal.updatedAt).toLocaleDateString(undefined, { month: 'short', year: '2-digit' })}
                                                         </span>
                                                     </div>
-                                                    <p className="text-subtle text-sm mb-4">{animal.breed} • {animal.age} years</p>
-                                                    <div className="flex gap-2">
+                                                    <div className="mt-3">
                                                         <Link href={`/dashboard/rescues/edit/${animal.id}`} className="w-full">
-                                                            <Button size="sm" variant="outline" fullWidth>Details</Button>
-                                                        </Link>
-                                                        <Link href={`/dashboard/patients/${animal.id}`} className="w-full">
-                                                            <Button size="sm" variant="outline" fullWidth>Medical</Button>
+                                                            <Button size="sm" variant="outline" fullWidth>View Details</Button>
                                                         </Link>
                                                     </div>
                                                 </div>
