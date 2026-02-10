@@ -108,7 +108,6 @@ export default function AnimalDetailsPage() {
 
                     <div className="flex gap-4">
                         <Button size="lg" fullWidth loading={submitting} onClick={handleAdopt}>Adopt {animal.name}</Button>
-                        <Button size="lg" variant="outline">Sponsor</Button>
                     </div>
                 </div>
             </div>
