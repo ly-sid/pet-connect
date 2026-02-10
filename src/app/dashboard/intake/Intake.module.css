@@ -96,6 +96,14 @@
     resize: vertical;
 }
 
+.select:disabled,
+.textarea:disabled {
+    background-color: #f9fafb;
+    color: #1f2937;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
     .grid {
         grid-template-columns: 1fr;
