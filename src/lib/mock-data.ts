@@ -14,7 +14,9 @@ const INITIAL_ANIMALS: Animal[] = [
         description: 'Friendly and energetic Golden Retriever who loves to play fetch.',
         images: ['https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=600&q=80'],
         medicalHistory: [],
-        fee: 150
+        fee: 150,
+        createdAt: '2023-01-01T00:00:00.000Z',
+        updatedAt: '2023-01-01T00:00:00.000Z'
     },
     {
         id: '2',
@@ -28,7 +30,9 @@ const INITIAL_ANIMALS: Animal[] = [
         description: 'Calm and affectionate Siamese cat looking for a quiet home.',
         images: ['https://images.unsplash.com/photo-1513245543132-31f507417b26?auto=format&fit=crop&w=600&q=80'],
         medicalHistory: [],
-        fee: 80
+        fee: 80,
+        createdAt: '2023-01-05T00:00:00.000Z',
+        updatedAt: '2023-01-05T00:00:00.000Z'
     },
     {
         id: '3',
@@ -44,7 +48,9 @@ const INITIAL_ANIMALS: Animal[] = [
         medicalHistory: [
             { id: 'm1', date: '2023-10-01', diagnosis: 'Leg Fracture', treatment: 'Splint and Rest', veterinarianName: 'Dr. Smith' }
         ],
-        fee: 200
+        fee: 200,
+        createdAt: '2023-02-10T00:00:00.000Z',
+        updatedAt: '2023-02-10T00:00:00.000Z'
     }
 ];
 
@@ -67,7 +73,12 @@ class MockService {
     }
 
     addAnimal(animal: Omit<Animal, 'id'>) {
-        const newAnimal = { ...animal, id: Math.random().toString(36).substr(2, 9) };
+        const newAnimal = {
+            ...animal,
+            id: Math.random().toString(36).substr(2, 9),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
         this.animals.push(newAnimal);
         return newAnimal;
     }

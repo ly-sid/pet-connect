@@ -10,6 +10,7 @@ import Link from 'next/link';
 export default function RescuesPage() {
     const [animals, setAnimals] = useState<Animal[]>([]);
     const [loading, setLoading] = useState(true);
+    const [showAdopted, setShowAdopted] = useState(false);
 
     useEffect(() => {
         const fetchAnimals = async () => {
@@ -84,43 +85,61 @@ export default function RescuesPage() {
                         )}
                     </section>
 
-                    {/* Adopted Section */}
+                    {/* Adopted Section - Collapsible */}
                     {adoptedAnimals.length > 0 && (
-                        <section>
-                            <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-green-700">
-                                Happily Adopted
-                                <span className="text-sm font-normal text-green-600 px-2 py-0.5 bg-green-50 rounded-full">{adoptedAnimals.length}</span>
-                            </h2>
-                            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
-                                {adoptedAnimals.map((animal) => (
-                                    <Card key={animal.id} padding="none" className="opacity-75 hover:opacity-100 transition-opacity">
-                                        <div style={{ height: '200px', backgroundColor: '#e5e7eb', backgroundImage: `url(${animal.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(100%)' }} />
-                                        <div className="p-4">
-                                            <div className="flex justify-between items-start mb-2">
-                                                <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{animal.name}</h3>
-                                                <span style={{
-                                                    fontSize: '0.75rem',
-                                                    padding: '0.25rem 0.5rem',
-                                                    borderRadius: '1rem',
-                                                    backgroundColor: '#10b981',
-                                                    color: 'white'
-                                                }}>
-                                                    {animal.status}
-                                                </span>
-                                            </div>
-                                            <p className="text-subtle text-sm mb-4">{animal.breed} • {animal.age} years</p>
-                                            <div className="flex gap-2">
-                                                <Link href={`/dashboard/rescues/edit/${animal.id}`} className="w-full">
-                                                    <Button size="sm" variant="outline" fullWidth>Details</Button>
-                                                </Link>
-                                                <Link href={`/dashboard/patients/${animal.id}`} className="w-full">
-                                                    <Button size="sm" variant="outline" fullWidth>Medical</Button>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </Card>
-                                ))}
-                            </div>
+                        <section className="bg-green-50 rounded-xl p-6 border border-green-100">
+                            <button
+                                onClick={() => setShowAdopted(!showAdopted)}
+                                className="w-full flex justify-between items-center text-left focus:outline-none"
+                            >
+                                <div>
+                                    <h2 className="text-xl font-bold text-green-800 flex items-center gap-2">
+                                        Happily Adopted
+                                        <span className="text-sm font-normal text-white px-2 py-0.5 bg-green-600 rounded-full">{adoptedAnimals.length}</span>
+                                    </h2>
+                                    <p className="text-green-600 text-sm mt-1">
+                                        {showAdopted ? "Validating our mission, one adoption at a time." : "Click to view our success stories."}
+                                    </p>
+                                </div>
+                                <span className="text-green-700 font-bold text-xl">
+                                    {showAdopted ? '−' : '+'}
+                                </span>
+                            </button>
+
+                            {showAdopted && (
+                                <div className="grid mt-6 animate-in fade-in slide-in-from-top-2 duration-300" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
+                                    {adoptedAnimals
+                                        .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+                                        .map((animal) => (
+                                            <Card key={animal.id} padding="none" className="opacity-90 hover:opacity-100 transition-opacity bg-white">
+                                                <div style={{ height: '200px', backgroundColor: '#e5e7eb', backgroundImage: `url(${animal.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(100%)' }} />
+                                                <div className="p-4">
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{animal.name}</h3>
+                                                        <span style={{
+                                                            fontSize: '0.75rem',
+                                                            padding: '0.25rem 0.5rem',
+                                                            borderRadius: '1rem',
+                                                            backgroundColor: '#10b981',
+                                                            color: 'white'
+                                                        }}>
+                                                            {new Date(animal.updatedAt).toLocaleDateString()}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-subtle text-sm mb-4">{animal.breed} • {animal.age} years</p>
+                                                    <div className="flex gap-2">
+                                                        <Link href={`/dashboard/rescues/edit/${animal.id}`} className="w-full">
+                                                            <Button size="sm" variant="outline" fullWidth>Details</Button>
+                                                        </Link>
+                                                        <Link href={`/dashboard/patients/${animal.id}`} className="w-full">
+                                                            <Button size="sm" variant="outline" fullWidth>Medical</Button>
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            </Card>
+                                        ))}
+                                </div>
+                            )}
                         </section>
                     )}
                 </div>

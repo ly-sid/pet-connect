@@ -30,6 +30,8 @@ export interface Animal {
     images: string[];
     medicalHistory: MedicalRecord[];
     fee: number;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface AdoptionRequest {
