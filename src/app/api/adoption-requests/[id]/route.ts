@@ -60,6 +60,31 @@ export async function PATCH(
                 where: { id: existingRequest.animalId },
                 data: { status: 'ADOPTED' }
             });
+
+            // Automatically reject other pending requests for this animal
+            const otherRequests = await prisma.adoptionRequest.findMany({
+                where: {
+                    animalId: existingRequest.animalId,
+                    id: { not: id },
+                    status: 'PENDING'
+                }
+            });
+
+            for (const req of otherRequests) {
+                await prisma.adoptionRequest.update({
+                    where: { id: req.id },
+                    data: { status: 'REJECTED' }
+                });
+
+                await prisma.notification.create({
+                    data: {
+                        userId: req.userId,
+                        title: 'Adoption Update',
+                        message: `The animal you requested (${existingRequest.animal.name}) has been adopted by another family. Thank you for your interest!`,
+                        type: 'info'
+                    }
+                });
+            }
         } else if (status === 'REJECTED') {
             await prisma.notification.create({
                 data: {
