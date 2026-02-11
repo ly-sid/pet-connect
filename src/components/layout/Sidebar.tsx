@@ -62,6 +62,9 @@ export function Sidebar() {
                         <Link href="/dashboard/approvals" className={`${styles.item} ${isActive('/dashboard/approvals')}`}>
                             Adoption Approvals
                         </Link>
+                        <Link href="/dashboard/marketplace" className={`${styles.item} ${isActive('/dashboard/marketplace')}`}>
+                            Marketplace Inventory
+                        </Link>
                     </>
                 )}
 

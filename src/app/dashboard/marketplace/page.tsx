@@ -67,27 +67,35 @@ export default function AdminMarketplacePage() {
                     </Link>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="flex flex-col gap-4">
                     {products.map((product) => (
-                        <Card key={product.id} padding="none">
-                            <div style={{
-                                height: '200px',
-                                backgroundColor: '#f3f4f6',
-                                backgroundImage: `url(${product.image})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center'
-                            }} />
-                            <div className="p-4">
-                                <h3 className="font-bold text-lg mb-1 truncate">{product.name}</h3>
-                                <p className="text-secondary mb-4">₹{product.price}</p>
-                                <Button
-                                    variant="danger"
-                                    size="sm"
-                                    fullWidth
-                                    onClick={() => handleDelete(product.id)}
-                                >
-                                    Delete Product
-                                </Button>
+                        <Card key={product.id} padding="none" className="overflow-hidden">
+                            <div className="flex flex-row h-32">
+                                {/* Column 1: Image */}
+                                <div className="w-32 flex-shrink-0 relative bg-gray-100">
+                                    <img
+                                        src={product.image}
+                                        alt={product.name}
+                                        className="w-full h-full object-cover absolute inset-0"
+                                    />
+                                </div>
+
+                                {/* Column 2: Details */}
+                                <div className="p-4 flex flex-col justify-center flex-grow">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <h3 className="font-bold text-lg mb-1">{product.name}</h3>
+                                            <p className="text-secondary font-medium">₹{product.price}</p>
+                                        </div>
+                                        <Button
+                                            variant="danger"
+                                            size="sm"
+                                            onClick={() => handleDelete(product.id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </div>
                             </div>
                         </Card>
                     ))}
