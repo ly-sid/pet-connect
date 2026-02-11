@@ -14,6 +14,7 @@ export function Input({ label, error, className = '', id, ...props }: InputProps
         <div className={styles.wrapper}>
             {label && <label htmlFor={inputId} className={styles.label}>{label}</label>}
             <input
+                suppressHydrationWarning
                 id={inputId}
                 className={`${styles.input} ${error ? styles.errorInput : ''} ${className}`}
                 {...props}

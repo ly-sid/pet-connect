@@ -167,7 +167,7 @@ export default function EditAnimalPage() {
                                 disabled={isAdopted}
                             />
 
-                            <div className="flex flex-col gap-1">
+                            <div className={styles.inputWrapper}>
                                 <label className="text-sm font-medium">Species</label>
                                 <select
                                     name="species"
@@ -207,7 +207,7 @@ export default function EditAnimalPage() {
                                 onChange={handleChange}
                                 disabled={isAdopted}
                             />
-                            <div className="flex flex-col gap-1">
+                            <div className={styles.inputWrapper}>
                                 <label className="text-sm font-medium">Gender</label>
                                 <select
                                     name="gender"
@@ -234,7 +234,7 @@ export default function EditAnimalPage() {
                                 disabled={isAdopted}
                             />
 
-                            <div className="flex flex-col gap-1">
+                            <div className={styles.inputWrapper}>
                                 <label className="text-sm font-medium">Description</label>
                                 <textarea
                                     name="description"

@@ -101,6 +101,31 @@ class BackendService {
         const res = await fetch('/api/notifications');
         return res.json();
     }
+
+    // Product Methods
+    async getProducts() {
+        const res = await fetch('/api/products');
+        if (!res.ok) throw new Error('Failed to fetch products');
+        return res.json();
+    }
+
+    async addProduct(product: { name: string, price: number, image: string }) {
+        const res = await fetch('/api/products', {
+            method: 'POST',
+            body: JSON.stringify(product),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!res.ok) throw new Error('Failed to add product');
+        return res.json();
+    }
+
+    async deleteProduct(id: number) {
+        const res = await fetch(`/api/products/${id}`, {
+            method: 'DELETE'
+        });
+        if (!res.ok) throw new Error('Failed to delete product');
+        return res.json();
+    }
 }
 
 

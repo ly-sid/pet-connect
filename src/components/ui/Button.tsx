@@ -28,6 +28,7 @@ export function Button({
 
     return (
         <button
+            suppressHydrationWarning
             className={rootClassName}
             disabled={disabled || loading}
             {...props}

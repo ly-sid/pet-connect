@@ -123,7 +123,7 @@ export default function IntakePage() {
                                 placeholder="e.g. Buddy"
                             />
 
-                            <div className="flex flex-col gap-1">
+                            <div className={styles.inputWrapper}>
                                 <label className="text-sm font-medium">Species</label>
                                 <select name="species" value={formData.species} onChange={handleChange} className={styles.select}>
                                     <option value="Dog">Dog</option>
@@ -156,7 +156,7 @@ export default function IntakePage() {
                                 value={formData.age}
                                 onChange={handleChange}
                             />
-                            <div className="flex flex-col gap-1">
+                            <div className={styles.inputWrapper}>
                                 <label className="text-sm font-medium">Gender</label>
                                 <select name="gender" value={formData.gender} onChange={handleChange} className={styles.select}>
                                     <option value="Male">Male</option>
@@ -177,7 +177,7 @@ export default function IntakePage() {
                                 placeholder="e.g. South Street Rescue"
                             />
 
-                            <div className="flex flex-col gap-1">
+                            <div className={styles.inputWrapper}>
                                 <label className="text-sm font-medium">Description & Medical Notes</label>
                                 <textarea
                                     name="description"
