@@ -103,13 +103,14 @@ class BackendService {
     }
 
     // Product Methods
-    async getProducts() {
-        const res = await fetch('/api/products');
+    async getProducts(view?: 'public') {
+        const url = view ? `/api/products?view=${view}` : '/api/products';
+        const res = await fetch(url);
         if (!res.ok) throw new Error('Failed to fetch products');
         return res.json();
     }
 
-    async addProduct(product: { name: string, price: number, image: string }) {
+    async addProduct(product: { name: string, price: number, image: string, stock?: number }) {
         const res = await fetch('/api/products', {
             method: 'POST',
             body: JSON.stringify(product),
@@ -124,6 +125,20 @@ class BackendService {
             method: 'DELETE'
         });
         if (!res.ok) throw new Error('Failed to delete product');
+        return res.json();
+    }
+
+    async purchaseProducts(items: { id: number, quantity: number }[]) {
+        const res = await fetch('/api/products/purchase', {
+            method: 'POST',
+            body: JSON.stringify({ items }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.error || 'Failed to complete purchase');
+        }
         return res.json();
     }
 }

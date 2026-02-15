@@ -15,7 +15,8 @@ export default function NewProductPage() {
     const [formData, setFormData] = useState({
         name: '',
         price: '',
-        image: ''
+        image: '',
+        stock: '0'
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,6 +52,7 @@ export default function NewProductPage() {
             await backendService.addProduct({
                 name: formData.name,
                 price: parseFloat(formData.price),
+                stock: parseInt(formData.stock),
                 image: formData.image || 'https://images.unsplash.com/photo-1589924691195-41432c84c161?auto=format&fit=crop&w=400&q=80' // Default fallback
             });
             alert('Product added successfully!');
@@ -122,6 +124,17 @@ export default function NewProductPage() {
                                 value={formData.price}
                                 onChange={handleChange}
                                 placeholder="0.00"
+                                required
+                            />
+
+                            <Input
+                                label="Stock Quantity"
+                                name="stock"
+                                type="number"
+                                min="0"
+                                value={formData.stock}
+                                onChange={handleChange}
+                                placeholder="0"
                                 required
                             />
                         </div>

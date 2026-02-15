@@ -2,11 +2,22 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
-        const products = await prisma.product.findMany({
+        const { searchParams } = new URL(request.url);
+        const view = searchParams.get('view');
+
+        const query: any = {
             orderBy: { createdAt: 'desc' }
-        });
+        };
+
+        if (view === 'public') {
+            query.where = {
+                stock: { gt: 0 }
+            };
+        }
+
+        const products = await prisma.product.findMany(query);
         return NextResponse.json(products);
     } catch (error) {
         return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
@@ -26,6 +37,7 @@ export async function POST(request: Request) {
             data: {
                 name,
                 price: parseFloat(price),
+                stock: parseInt(body.stock || '0'),
                 image
             }
         });
