@@ -23,6 +23,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="google-site-verification" content="WaNp0dI2SLEP_h6A93k2mR6B9TC-AsyB7YD_SW35Y8Q" />
+      </head>
       <body className={inter.className} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <AuthProvider>
           <Navbar />
