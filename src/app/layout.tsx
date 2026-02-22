@@ -11,6 +11,9 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Pet Connect',
   description: 'Pet Care, Rescue, and Adoption Management Platform',
+  verification: {
+    google: "WaNp0dI2SLEP_h6A93k2mR6B9TC-AsyB7YD_SW35Y8Q",
+  },
 };
 
 export default function RootLayout({
