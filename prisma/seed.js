@@ -39,6 +39,7 @@ async function main() {
     // Add some sample pets
     const pets = [
         {
+            id: '7f643e02-1586-4638-8546-5f654a077c7c',
             name: 'Buddy',
             species: 'Dog',
             breed: 'Golden Retriever',
@@ -50,6 +51,7 @@ async function main() {
             images: ['https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=800']
         },
         {
+            id: '8c7b6a4a-2e11-4516-928d-1f6b57d6226f',
             name: 'Whiskers',
             species: 'Cat',
             breed: 'Indie Cat',
@@ -64,12 +66,9 @@ async function main() {
 
     for (const pet of pets) {
         await prisma.animal.upsert({
-            where: { id: pet.name + '_seed' }, // Fake ID for upsert check
-            update: {},
-            create: {
-                ...pet,
-                id: pet.name.toLowerCase() === 'buddy' ? '7f643e02-1586-4638-8546-5f654a077c7c' : undefined // Match existing or new
-            }
+            where: { id: pet.id },
+            update: pet,
+            create: pet
         });
     }
 
