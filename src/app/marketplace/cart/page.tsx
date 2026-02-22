@@ -5,6 +5,7 @@ import { backendService } from '@/lib/backend-service';
 import { Button } from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import styles from './cart.module.css';
 
 export default function CartPage() {
     const [cart, setCart] = useState<any[]>([]);
@@ -61,7 +62,7 @@ export default function CartPage() {
 
     const subtotal = cart.reduce((total, item) => total + item.price, 0);
     const shipping = 0; // Free shipping logic for now
-    const tax = 0; // Tax logic
+    const tax = Math.round(subtotal * 0.02); // 2% tax logic
     const total = subtotal + shipping + tax;
 
     const handleCheckout = async () => {
@@ -90,166 +91,138 @@ export default function CartPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <div className="container" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <p className="text-subtle">Loading cart...</p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-[1200px] mx-auto">
-                <h1 className="text-3xl font-extrabold text-gray-900 mb-8">Your Shopping Cart</h1>
+        <div className="container" style={{ padding: '3rem 1.5rem', minHeight: '80vh' }}>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '2rem' }}>Your Shopping Cart</h1>
 
-                {cart.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-                        <div className="w-32 h-32 mb-6 mx-auto">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-gray-200">
-                                <path d="M4.15989 5.86982C3.80989 3.86982 5.37989 2.13982 7.40989 2.13982H16.5999C18.6299 2.13982 20.1999 3.86982 19.8499 5.86982L18.4999 13.5498C18.2799 15.0198 17.0099 16.0998 15.5199 16.0998H8.48989C6.98989 16.0998 5.71989 15.0198 5.49989 13.5498L4.15989 5.86982Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                <path d="M16 16.1L16.89 19.68C17.06 20.35 16.55 21 15.86 21H8.13999C7.44999 21 6.93999 20.35 7.10999 19.68L8 16.1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                <path d="M9 7H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </div>
-                        <h2 className="text-xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
-                        <p className="text-gray-500 mb-8 text-sm">Looks like you haven't added anything yet.</p>
-                        <Link href="/marketplace">
-                            <Button className="px-8 py-3 rounded-full bg-slate-900 text-white hover:bg-slate-800">
-                                Browse Products
-                            </Button>
-                        </Link>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                        {/* Left Column: Cart Items (70% rough equivalent) */}
-                        <div className="lg:col-span-8 space-y-6">
-                            {/* Header Row (Desktop) */}
-                            <div className="hidden md:grid grid-cols-12 text-sm font-medium text-gray-500 pb-2 border-b border-gray-200 px-4">
-                                <div className="col-span-6">Product</div>
-                                <div className="col-span-2 text-center">Price</div>
-                                <div className="col-span-2 text-center">Quantity</div>
-                                <div className="col-span-2 text-right">Total</div>
-                            </div>
-
-                            <div className="space-y-4">
-                                {groupedItems.map((item: any) => (
-                                    <div
-                                        key={item.id}
-                                        className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:grid md:grid-cols-12 md:items-center gap-6 transition-shadow hover:shadow-md"
-                                    >
-                                        {/* Product Image & Name */}
-                                        <div className="col-span-6 flex items-start gap-4">
-                                            <div
-                                                className="w-16 h-16 bg-gray-100 rounded-lg bg-cover bg-center flex-shrink-0 border border-gray-200"
-                                                style={{ backgroundImage: `url(${item.image})` }}
-                                            />
-                                            <div className="flex flex-col justify-between h-24 py-1">
-                                                <div>
-                                                    <h3 className="text-lg font-bold text-gray-900 leading-tight mb-1">{item.name}</h3>
-                                                    <p className="text-sm text-gray-500">ID: {item.id}</p>
-                                                </div>
-                                                <button
-                                                    onClick={() => removeLine(item.id)}
-                                                    className="text-red-500 hover:text-red-700 text-sm font-medium flex items-center gap-1 self-start group transition-colors"
-                                                >
-                                                    <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                    </svg>
-                                                    Remove
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {/* Unit Price */}
-                                        <div className="col-span-2 text-center hidden md:block">
-                                            <span className="text-gray-900 font-medium">₹{item.price.toLocaleString('en-IN')}</span>
-                                        </div>
-
-                                        {/* Quantity Stepper */}
-                                        <div className="col-span-2 flex justify-center">
-                                            <div className="flex items-center bg-gray-50 rounded-lg p-1 border border-gray-200">
-                                                <button
-                                                    onClick={() => removeOneInstance(item.id)}
-                                                    disabled={item.quantity <= 1}
-                                                    className="w-8 h-8 flex items-center justify-center rounded-md bg-white text-gray-600 shadow-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                                >
-                                                    -
-                                                </button>
-                                                <span className="w-10 text-center font-semibold text-gray-900">{item.quantity}</span>
-                                                <button
-                                                    onClick={() => addToCart(item)}
-                                                    className="w-8 h-8 flex items-center justify-center rounded-md bg-white text-gray-600 shadow-sm hover:bg-gray-100 transition-all"
-                                                >
-                                                    +
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {/* Subtotal */}
-                                        <div className="col-span-2 text-right md:text-right flex justify-between md:block items-center border-t md:border-t-0 border-gray-100 pt-4 md:pt-0 mt-4 md:mt-0">
-                                            <span className="md:hidden text-gray-500 font-medium">Subtotal</span>
-                                            <span className="text-lg font-bold text-gray-900">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+            {cart.length === 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '4rem 1rem', textAlign: 'center', backgroundColor: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)' }}>
+                    <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>Your cart is empty</h2>
+                    <p className="text-subtle" style={{ marginBottom: '2rem' }}>Looks like you haven't added anything yet.</p>
+                    <Link href="/marketplace">
+                        <Button variant="primary">Browse Products</Button>
+                    </Link>
+                </div>
+            ) : (
+                <div className={styles.cartContainer}>
+                    {/* Left Column: Cart Items */}
+                    <div className={styles.leftColumn}>
+                        {/* Header Row */}
+                        <div className={styles.headerRow}>
+                            <div className={styles.headerProduct}>Product</div>
+                            <div className={styles.headerPrice}>Price</div>
+                            <div className={styles.headerQuantity}>Quantity</div>
+                            <div className={styles.headerTotal}>Total</div>
                         </div>
 
-                        {/* Right Column: Order Summary (30% rough equivalent) */}
-                        <div className="lg:col-span-4">
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-8">
-                                <h2 className="text-lg font-bold text-gray-900 mb-6">Order Summary</h2>
+                        <div className={styles.itemList}>
+                            {groupedItems.map((item: any) => (
+                                <div key={item.id} className={styles.itemRow}>
+                                    {/* Product Area */}
+                                    <div className={styles.itemProductArea}>
+                                        <div
+                                            className={styles.itemImage}
+                                            style={{ backgroundImage: `url(${item.image})` }}
+                                        />
+                                        <div className={styles.itemDetails}>
+                                            <h3 className={styles.itemName}>{item.name}</h3>
+                                            <p className={styles.itemId}>(ID: {item.id})</p>
+                                            <button
+                                                onClick={() => removeLine(item.id)}
+                                                className={styles.removeBtn}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </div>
 
-                                <div className="space-y-4 mb-6">
-                                    <div className="flex justify-between text-gray-600">
-                                        <span>Subtotal</span>
-                                        <span className="font-medium text-gray-900">₹{subtotal.toLocaleString('en-IN')}</span>
+                                    {/* Unit Price */}
+                                    <div className={styles.itemPriceArea}>
+                                        ₹{item.price.toLocaleString('en-IN')}
                                     </div>
-                                    <div className="flex justify-between text-gray-600">
-                                        <span>Delivery</span>
-                                        <span className="text-green-600 font-medium">Free</span>
+
+                                    {/* Quantity Stepper */}
+                                    <div className={styles.itemQuantityArea}>
+                                        <div className={styles.quantityStepper}>
+                                            <button
+                                                onClick={() => removeOneInstance(item.id)}
+                                                disabled={item.quantity <= 1}
+                                                className={styles.stepperBtn}
+                                                aria-label="Decrease quantity"
+                                            >
+                                                -
+                                            </button>
+                                            <span className={styles.stepperValue}>{item.quantity}</span>
+                                            <button
+                                                onClick={() => addToCart(item)}
+                                                className={styles.stepperBtn}
+                                                aria-label="Increase quantity"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className="flex justify-between text-gray-600">
-                                        <span>Tax</span>
-                                        <span className="font-medium text-gray-900">₹0</span>
-                                    </div>
-                                    <div className="h-px bg-gray-200 my-4"></div>
-                                    <div className="flex justify-between items-end">
-                                        <span className="text-base font-bold text-gray-900">Total</span>
-                                        <span className="text-2xl font-extrabold text-gray-900">₹{total.toLocaleString('en-IN')}</span>
+
+                                    {/* Subtotal */}
+                                    <div className={styles.itemTotalArea}>
+                                        ₹{(item.price * item.quantity).toLocaleString('en-IN')}
                                     </div>
                                 </div>
+                            ))}
+                        </div>
 
-                                <div className="space-y-3">
-                                    <Button
-                                        onClick={handleCheckout}
-                                        loading={processingCheckout}
-                                        className="w-full bg-slate-900 hover:bg-slate-800 text-white rounded-lg py-3 h-auto text-base"
-                                        fullWidth
-                                    >
-                                        Proceed to Checkout
-                                    </Button>
-                                    <Link href="/marketplace" className="block w-full">
-                                        <Button
-                                            variant="outline"
-                                            className="w-full justify-center rounded-lg border-gray-300 text-gray-700 hover:bg-gray-50 py-3 h-auto"
-                                            fullWidth
-                                        >
-                                            Continue Shopping
-                                        </Button>
-                                    </Link>
-                                </div>
-
-                                <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-400">
-                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                    </svg>
-                                    <span>Secure Checkout</span>
-                                </div>
-                            </div>
+                        {/* Continue Shopping Button */}
+                        <div className={styles.continueShoppingWrapper}>
+                            <Link href="/marketplace">
+                                <button className={styles.continueShoppingBtn}>
+                                    Continue Shopping
+                                </button>
+                            </Link>
                         </div>
                     </div>
-                )}
-            </div>
+
+                    {/* Right Column: Order Summary */}
+                    <div className={styles.rightColumn}>
+                        <div className={styles.summaryCard}>
+                            <h2 className={styles.summaryTitle}>Order Summary</h2>
+
+                            <div className={styles.summaryRows}>
+                                <div className={styles.summaryRow}>
+                                    <span>Subtotal</span>
+                                    <span className={styles.summaryValue}>₹{subtotal.toLocaleString('en-IN')}</span>
+                                </div>
+                                <div className={styles.summaryRow}>
+                                    <span>Delivery</span>
+                                    <span className={styles.summaryValue}>Free</span>
+                                </div>
+                                <div className={styles.summaryRow}>
+                                    <span>Tax (2%)</span>
+                                    <span className={styles.summaryValue}>₹{tax.toLocaleString('en-IN')}</span>
+                                </div>
+                            </div>
+
+                            <div className={styles.summaryTotalRow}>
+                                <span>Total</span>
+                                <span>₹{total.toLocaleString('en-IN')}</span>
+                            </div>
+
+                            <button
+                                onClick={handleCheckout}
+                                disabled={processingCheckout}
+                                className={styles.checkoutBtn}
+                            >
+                                {processingCheckout ? 'Processing...' : 'Proceed to Checkout'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
