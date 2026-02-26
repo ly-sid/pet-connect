@@ -15,7 +15,12 @@ export default function MyDonationsPage() {
         const fetchDonations = async () => {
             try {
                 const data = await backendService.getDonations();
-                setDonations(data);
+                if (Array.isArray(data)) {
+                    setDonations(data);
+                } else {
+                    console.error('Expected array for donations but got:', data);
+                    setDonations([]);
+                }
             } catch (error) {
                 console.error('Failed to fetch donations:', error);
             } finally {
