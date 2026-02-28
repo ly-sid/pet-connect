@@ -114,31 +114,43 @@ export default function AnimalSearchPage() {
                 <>
                     <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
                         {filtered.map(animal => (
-                            <Card key={animal.id} padding="none" className="h-full relative overflow-hidden flex flex-col" interactive>
-                                <Link href={`/animals/${animal.id}`} className="block relative">
-                                    <div style={{ height: '240px', backgroundColor: '#e5e7eb', backgroundImage: `url(${animal.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-                                </Link>
+                            <Card key={animal.id} padding="none" interactive>
+                                <div style={{ position: 'relative', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                    <Link href={`/animals/${animal.id}`} style={{ display: 'block' }}>
+                                        <div style={{ height: '240px', backgroundColor: '#e5e7eb', backgroundImage: `url(${animal.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                                    </Link>
 
-                                <button
-                                    onClick={(e) => toggleFav(e, animal.id)}
-                                    className={`absolute top-3 right-3 p-2 rounded-full shadow-md transition-transform flex items-center justify-center z-10 ${favoriteIds.has(animal.id) ? 'bg-white text-red-500 hover:scale-110' : 'bg-white/80 text-gray-400 hover:bg-white hover:text-red-500'}`}
-                                    aria-label="Toggle favorite"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={favoriteIds.has(animal.id) ? 'currentColor' : 'none'} stroke="currentColor" className="w-5 h-5">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={favoriteIds.has(animal.id) ? 0 : 2} d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                                    </svg>
-                                </button>
+                                    <button
+                                        onClick={(e) => toggleFav(e, animal.id)}
+                                        style={{
+                                            position: 'absolute', top: '12px', right: '12px', padding: '8px',
+                                            borderRadius: '50%', border: 'none', boxShadow: 'var(--shadow-md)',
+                                            backgroundColor: favoriteIds.has(animal.id) ? 'white' : 'rgba(255,255,255,0.9)',
+                                            color: favoriteIds.has(animal.id) ? '#ef4444' : '#9ca3af',
+                                            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            transition: 'transform 0.2s',
+                                            transform: 'scale(1)'
+                                        }}
+                                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                                        aria-label="Toggle favorite"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={favoriteIds.has(animal.id) ? 'currentColor' : 'none'} stroke="currentColor" style={{ width: '20px', height: '20px' }}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={favoriteIds.has(animal.id) ? 0 : 2} d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                        </svg>
+                                    </button>
 
-                                <div className="p-4 flex flex-col flex-1">
-                                    <div className="flex justify-between items-center mb-1">
-                                        <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{animal.name}</h3>
-                                        <span style={{ fontWeight: 600, color: 'var(--accent-color)' }}>₹{animal.fee}</span>
-                                    </div>
-                                    <p className="text-subtle text-sm mb-3">{animal.breed} • {animal.age} yrs • {animal.gender}</p>
-                                    <div className="mt-auto">
-                                        <Link href={`/animals/${animal.id}`}>
-                                            <Button fullWidth variant="outline">View Profile</Button>
-                                        </Link>
+                                    <div className="p-4" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                                        <div className="flex justify-between items-center mb-1">
+                                            <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{animal.name}</h3>
+                                            <span style={{ fontWeight: 600, color: 'var(--accent-color)' }}>₹{animal.fee}</span>
+                                        </div>
+                                        <p className="text-subtle text-sm mb-3">{animal.breed} • {animal.age} yrs • {animal.gender}</p>
+                                        <div style={{ marginTop: 'auto' }}>
+                                            <Link href={`/animals/${animal.id}`} style={{ display: 'block' }}>
+                                                <Button fullWidth variant="outline">View Profile</Button>
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
                             </Card>
