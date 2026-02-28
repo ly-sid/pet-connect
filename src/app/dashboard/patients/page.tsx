@@ -56,7 +56,7 @@ export default function PatientsPage() {
                                 <div className="text-right">
                                     <div className="font-medium text-sm">Last Visit</div>
                                     <div className="text-sm text-subtle">
-                                        {(animal.medicalHistory && animal.medicalHistory.length > 0) ? new Date(animal.medicalHistory[animal.medicalHistory.length - 1].date).toLocaleDateString() : 'N/A'}
+                                        {(animal.medicalRecords && animal.medicalRecords.length > 0) ? new Date(animal.medicalRecords[animal.medicalRecords.length - 1].date).toLocaleDateString() : 'N/A'}
                                     </div>
                                 </div>
                                 <Link href={`/dashboard/patients/${animal.id}`}>

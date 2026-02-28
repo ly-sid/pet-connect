@@ -67,13 +67,7 @@ export default function DashboardPage() {
                     <>
                         <StatsCard title="My Applications" value={stats.myApplications?.toString() || '0'} label="Applications submitted" />
                         <StatsCard title="Favorites" value={stats.favorites?.toString() || '0'} label="Saved animals" />
-                    </>
-                )}
-
-                {user.role === 'DONOR' && stats && (
-                    <>
                         <StatsCard title="Total Contributed" value={`₹${stats.totalContributed?.toLocaleString() || '0'}`} label="Lifetime donations" />
-                        <StatsCard title="Active Sponsorships" value="0" label="Animals supported monthly" />
                         <StatsCard title="Impact" value={stats.impactCount?.toString() || '0'} label="Donations made" />
                     </>
                 )}

@@ -100,10 +100,10 @@ export default function MedicalRecordPage() {
                 )}
 
                 <div className="flex flex-col gap-4">
-                    {(!animal.medicalHistory || animal.medicalHistory.length === 0) ? (
+                    {(!animal.medicalRecords || animal.medicalRecords.length === 0) ? (
                         <div className="text-center py-8 text-subtle bg-gray-50 rounded-lg">No medical history recorded yet.</div>
                     ) : (
-                        animal.medicalHistory.map((record: any) => (
+                        animal.medicalRecords.map((record: any) => (
                             <Card key={record.id} padding="md">
                                 <div className="flex justify-between mb-2">
                                     <div className="font-bold text-lg">{record.diagnosis}</div>

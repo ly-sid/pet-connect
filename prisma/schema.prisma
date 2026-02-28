@@ -15,7 +15,6 @@ enum Role {
   RESCUE
   VET
   USER
-  DONOR
   ADVERTISER
 }
 

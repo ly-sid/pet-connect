@@ -68,7 +68,7 @@ export function Sidebar() {
                     </>
                 )}
 
-                {(user.role === 'DONOR' || user.role === 'ADMIN') && (
+                {(user.role === 'USER' || user.role === 'ADMIN') && (
                     <>
                         <div className={styles.sectionTitle}>Philanthropy</div>
                         <Link href="/dashboard/donations" className={`${styles.item} ${isActive('/dashboard/donations')}`}>

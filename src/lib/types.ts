@@ -1,4 +1,4 @@
-export type UserRole = 'ADMIN' | 'RESCUE' | 'VET' | 'USER' | 'DONOR' | 'ADVERTISER';
+export type UserRole = 'ADMIN' | 'RESCUE' | 'VET' | 'USER' | 'ADVERTISER';
 
 export interface User {
     id: string;
@@ -28,7 +28,7 @@ export interface Animal {
     location: string;
     description: string;
     images: string[];
-    medicalHistory: MedicalRecord[];
+    medicalRecords: MedicalRecord[];
     fee: number;
     createdAt: string;
     updatedAt: string;

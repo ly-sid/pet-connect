@@ -124,7 +124,7 @@ export default function UsersPage() {
                                 <Input label="Full Name" name="name" value={formData.name} onChange={handleChange} required placeholder="Dr. John Smith" />
                                 <Input label="Username" name="username" value={formData.username} onChange={handleChange} required placeholder="johnsmith_vet" />
                                 <Input label="Email Address" type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="john@vetclinic.com" />
-                                <Input label="Temporary Password" type="password" name="password" value={formData.password} onChange={handleChange} required placeholder="SecurePassword123!" />
+                                <Input label="Password" type="password" name="password" value={formData.password} onChange={handleChange} required placeholder="SecurePassword123!" />
 
                                 <div className="space-y-1">
                                     <label className="block text-sm font-medium text-gray-700">Role level</label>
@@ -136,7 +136,7 @@ export default function UsersPage() {
                                     >
                                         <option value="VET">Veterinarian (Medical Access)</option>
                                         <option value="RESCUE">Rescue Team (Intake Access)</option>
-                                        <option value="DONOR">Sponsor / Donor</option>
+
                                         <option value="ADMIN">Administrator (Full Access)</option>
                                     </select>
                                 </div>

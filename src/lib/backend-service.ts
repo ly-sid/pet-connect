@@ -14,7 +14,7 @@ class BackendService {
         return res.json();
     }
 
-    async addAnimal(animal: Omit<Animal, 'id' | 'medicalHistory'>) {
+    async addAnimal(animal: Omit<Animal, 'id' | 'medicalRecords'>) {
         const res = await fetch('/api/animals', {
             method: 'POST',
             body: JSON.stringify(animal),

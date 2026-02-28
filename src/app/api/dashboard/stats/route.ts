@@ -31,12 +31,13 @@ export async function GET(req: Request) {
             stats.pendingInquiries = await prisma.adoptionRequest.count({ where: { status: 'PENDING' } });
         } else if (user.role === 'USER') {
             stats.myApplications = await prisma.adoptionRequest.count({ where: { userId: user.id } });
+
             const userWithFavs = await prisma.user.findUnique({
                 where: { id: user.id },
                 include: { _count: { select: { favoriteAnimals: true } } }
             });
             stats.favorites = userWithFavs?._count?.favoriteAnimals || 0;
-        } else if (user.role === 'DONOR') {
+
             const contribution = await prisma.donation.aggregate({
                 where: { userId: user.id },
                 _sum: { amount: true },
@@ -44,7 +45,6 @@ export async function GET(req: Request) {
             });
             stats.totalContributed = contribution._sum.amount || 0;
             stats.impactCount = contribution._count.id || 0;
-            stats.activeSponsorships = 0; // Placeholder
         }
 
         return NextResponse.json(stats);
