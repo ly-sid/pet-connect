@@ -52,6 +52,7 @@ export interface RescueRequest {
     breed: string;
     location: string;
     description: string;
+    image?: string;
     status: 'PENDING' | 'APPROVED' | 'REJECTED';
     createdAt: string;
 }

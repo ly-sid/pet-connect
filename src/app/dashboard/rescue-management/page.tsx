@@ -67,15 +67,22 @@ export default function RescueManagementPage() {
                     {requests.map((req) => (
                         <Card key={req.id} padding="md">
                             <div className="flex flex-col md:flex-row justify-between gap-4 border-b border-gray-100 pb-4 mb-4">
-                                <div>
-                                    <div className="flex items-center gap-3 mb-1">
-                                        <h3 className="font-bold text-xl">{req.petName}</h3>
-                                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${getStatusColor(req.status)}`}>
-                                            {req.status}
-                                        </span>
-                                    </div>
-                                    <div className="text-sm font-medium text-gray-700">
-                                        {req.species} • {req.breed}
+                                <div className="flex gap-4 items-center">
+                                    {req.image && (
+                                        <div className="flex-shrink-0 w-20 h-20 rounded-md bg-gray-100 overflow-hidden shadow-sm">
+                                            <img src={req.image} alt={req.petName} className="w-full h-full object-cover" />
+                                        </div>
+                                    )}
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-1">
+                                            <h3 className="font-bold text-xl">{req.petName}</h3>
+                                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${getStatusColor(req.status)}`}>
+                                                {req.status}
+                                            </span>
+                                        </div>
+                                        <div className="text-sm font-medium text-gray-700">
+                                            {req.species} • {req.breed}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="text-sm text-subtle md:text-right">

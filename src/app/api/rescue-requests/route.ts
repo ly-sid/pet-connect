@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        const { petName, species, breed, location, description } = body;
+        const { petName, species, breed, location, description, image } = body;
 
         const rescueRequest = await prisma.rescueRequest.create({
             data: {
@@ -33,6 +33,7 @@ export async function POST(req: Request) {
                 breed,
                 location,
                 description,
+                image,
                 status: 'PENDING'
             }
         });

@@ -67,7 +67,7 @@ class BackendService {
     }
 
     // Rescue Requests Methods
-    async submitRescueRequest(request: { petName?: string; species: string; breed: string; location: string; description: string }) {
+    async submitRescueRequest(request: { petName?: string; species: string; breed: string; location: string; description: string; image?: string }) {
         const res = await fetch('/api/rescue-requests', {
             method: 'POST',
             body: JSON.stringify(request),

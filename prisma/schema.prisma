@@ -144,6 +144,7 @@ model RescueRequest {
   breed       String
   location    String
   description String        @db.Text
+  image       String?       @db.Text
   status      RequestStatus @default(PENDING)
   createdAt   DateTime      @default(now())
   user        User          @relation(fields: [userId], references: [id])
