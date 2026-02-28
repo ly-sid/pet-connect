@@ -79,7 +79,7 @@ export default function MedicalRecordPage() {
                 <div>
                     <button onClick={() => router.back()} className="text-sm text-subtle hover:text-primary mb-2">← Back to Patients</button>
                     <h1 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Medical Record: {animal.name}</h1>
-                    <p className="text-subtle">ID: {animal.id} • {animal.species} • {animal.age} yrs</p>
+                    <p className="text-subtle">{animal.species} • {animal.age} {animal.age === 1 ? 'yr' : 'yrs'}</p>
                 </div>
                 {(user?.role === 'VET' || user?.role === 'ADMIN') && (
                     <Button onClick={() => setShowForm(!showForm)}>{showForm ? 'Cancel' : '+ Add Diagnosis'}</Button>
