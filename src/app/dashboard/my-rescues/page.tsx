@@ -13,7 +13,7 @@ export default function MyRescueReportsPage() {
     const [loading, setLoading] = useState(true);
 
     const openNewRequestWindow = () => {
-        window.open('/dashboard/my-rescues/new', 'RescueReportWindow', 'width=800,height=750,left=200,top=100');
+        window.open('/rescue-report', 'RescueReportWindow', 'width=900,height=850,left=200,top=100');
     };
 
     const fetchRequests = async () => {
