@@ -159,6 +159,26 @@ class BackendService {
         if (!res.ok) throw new Error('Failed to fetch favorites');
         return res.json();
     }
+
+    // User Management Methods
+    async getUsers() {
+        const res = await fetch('/api/admin/users');
+        if (!res.ok) throw new Error('Failed to fetch users');
+        return res.json();
+    }
+
+    async createUser(userData: any) {
+        const res = await fetch('/api/admin/users', {
+            method: 'POST',
+            body: JSON.stringify(userData),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!res.ok) {
+            const error = await res.json();
+            throw new Error(error.error || 'Failed to create user');
+        }
+        return res.json();
+    }
 }
 
 
