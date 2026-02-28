@@ -7,6 +7,7 @@ import { Animal } from '@/lib/types';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { useAuth } from '@/lib/auth-context';
+import Link from 'next/link';
 
 export default function AnimalDetailsPage() {
     const { id } = useParams();
@@ -134,7 +135,13 @@ export default function AnimalDetailsPage() {
                     </div>
 
                     <div className="flex gap-4">
-                        <Button size="lg" style={{ flex: 1 }} loading={submitting} onClick={handleAdopt}>Adopt {animal.name}</Button>
+                        {(user?.role === 'VET' || user?.role === 'ADMIN') ? (
+                            <Link href={`/dashboard/patients/${animal.id}`} style={{ flex: 1, display: 'block' }}>
+                                <Button size="lg" fullWidth>Patient Medical Record</Button>
+                            </Link>
+                        ) : (
+                            <Button size="lg" style={{ flex: 1 }} loading={submitting} onClick={handleAdopt}>Adopt {animal.name}</Button>
+                        )}
                         <Button
                             size="lg"
                             variant="outline"
