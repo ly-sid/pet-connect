@@ -100,7 +100,8 @@ export default function MedicalRecordPage() {
                             <div className="space-y-1">
                                 <label className="block text-sm font-medium text-gray-700">Treatment Plan</label>
                                 <textarea
-                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 min-h-[120px] resize-y"
+                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-y"
+                                    rows={5}
                                     value={newRecord.treatment}
                                     onChange={e => setNewRecord({ ...newRecord, treatment: e.target.value })}
                                     required
