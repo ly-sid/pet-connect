@@ -155,6 +155,7 @@ class BackendService {
 
     async getFavorites() {
         const res = await fetch('/api/favorites');
+        if (res.status === 401) return [];
         if (!res.ok) throw new Error('Failed to fetch favorites');
         return res.json();
     }

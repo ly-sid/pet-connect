@@ -19,11 +19,13 @@ export default function AnimalDetailsPage() {
 
     useEffect(() => {
         if (user && animal) {
-            backendService.getFavorites().then(favs => {
-                if (Array.isArray(favs)) {
-                    setIsFavorite(favs.some((f: Animal) => f.id === animal.id));
-                }
-            });
+            backendService.getFavorites()
+                .then(favs => {
+                    if (Array.isArray(favs)) {
+                        setIsFavorite(favs.some((f: Animal) => f.id === animal.id));
+                    }
+                })
+                .catch(err => console.error("Could not fetch favorites", err));
         }
     }, [user, animal]);
 
