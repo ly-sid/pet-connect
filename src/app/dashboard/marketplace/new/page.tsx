@@ -66,81 +66,95 @@ export default function NewProductPage() {
     };
 
     return (
-        <div className={styles.container}>
-            <div className={styles.header}>
-                <div>
-                    <h1 className={styles.title}>Add New Product</h1>
-                    <p className="text-subtle">List a new item in the marketplace</p>
+        <div style={{ padding: '20px 0', fontFamily: 'system-ui, sans-serif' }}>
+            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+
+                {/* Header */}
+                <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                    <div>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#111', margin: '0 0 10px 0', letterSpacing: '-0.02em' }}>Add New Product</h1>
+                        <p style={{ color: '#666', fontSize: '1.1rem', margin: 0, maxWidth: '600px' }}>
+                            List a new item in the marketplace inventory.
+                        </p>
+                    </div>
                 </div>
-                <div className="flex gap-2">
-                    <Button variant="outline" onClick={() => router.back()}>Cancel</Button>
-                    <Button onClick={handleSubmit} disabled={loading}>
-                        {loading ? 'Adding...' : 'Add Product'}
-                    </Button>
+
+                <div style={{ padding: '40px', backgroundColor: '#fff', borderTop: '6px solid var(--primary-color, #111)', boxShadow: '0 20px 40px rgba(0,0,0,0.06)', borderRadius: '16px' }}>
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+
+                        {/* Section 1: Product Image */}
+                        <div>
+                            <h3 style={{ textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '2px', color: '#999', margin: '0 0 20px 0', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>Product Photography</h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <p style={{ margin: '0 0 10px 0', fontSize: '0.9rem', color: '#666' }}>Upload a high-quality image of the product.</p>
+                                <div style={{ border: '2px dashed #ccc', borderRadius: '12px', padding: '30px', position: 'relative', textAlign: 'center', backgroundColor: '#fafafa', cursor: 'pointer' }}>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer', zIndex: 10 }}
+                                        onChange={handleImageChange}
+                                    />
+                                    {preview ? (
+                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
+                                            <img src={preview} alt="Preview" style={{ width: '150px', height: '150px', objectFit: 'cover', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                                            <span style={{ color: '#2ecc71', fontWeight: 600 }}>Image Selected - Click to change</span>
+                                        </div>
+                                    ) : (
+                                        <div style={{ color: '#888' }}>
+                                            <div style={{ fontSize: '2rem', marginBottom: '10px' }}>📷</div>
+                                            <div style={{ fontWeight: 600 }}>Click or drag a photo here</div>
+                                            <div style={{ fontSize: '0.8rem', marginTop: '5px' }}>Supports JPG/PNG up to 5MB</div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Section 2: Product Details */}
+                        <div>
+                            <h3 style={{ textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '2px', color: '#999', margin: '0 0 20px 0', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>Product Details</h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                <Input
+                                    label="Product Name"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    placeholder="e.g. Premium Dog Food"
+                                    required
+                                />
+                                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '20px' }}>
+                                    <Input
+                                        label="Price (₹)"
+                                        name="price"
+                                        type="number"
+                                        value={formData.price}
+                                        onChange={handleChange}
+                                        placeholder="0.00"
+                                        required
+                                    />
+                                    <Input
+                                        label="Stock Quantity"
+                                        name="stock"
+                                        type="number"
+                                        min="0"
+                                        value={formData.stock}
+                                        onChange={handleChange}
+                                        placeholder="0"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '15px', paddingTop: '20px', borderTop: '1px solid #eee' }}>
+                            <Button variant="outline" type="button" onClick={() => router.back()}>Cancel Registration</Button>
+                            <Button type="submit" loading={loading}>Add Product</Button>
+                        </div>
+
+                    </form>
                 </div>
             </div>
-
-            <form className={styles.grid}>
-                {/* Left Column: Image Upload */}
-                <div className={styles.imageSection}>
-                    <Card padding="none" className={styles.imageUpload}>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            className="absolute inset-0 opacity-0 cursor-pointer"
-                            onChange={handleImageChange}
-                        />
-                        {preview ? (
-                            <img src={preview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        ) : (
-                            <>
-                                <svg className="w-12 h-12 mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span className="font-medium text-sm">Click to upload photo</span>
-                            </>
-                        )}
-                    </Card>
-                </div>
-
-                {/* Right Column: Details */}
-                <div className={styles.formSection}>
-                    <Card padding="md">
-                        <div className={styles.sectionLabel}>Product Details</div>
-                        <div className="flex flex-col gap-4">
-                            <Input
-                                label="Product Name"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                placeholder="e.g. Premium Dog Food"
-                                required
-                            />
-
-                            <Input
-                                label="Price (₹)"
-                                name="price"
-                                type="number"
-                                value={formData.price}
-                                onChange={handleChange}
-                                placeholder="0.00"
-                                required
-                            />
-
-                            <Input
-                                label="Stock Quantity"
-                                name="stock"
-                                type="number"
-                                min="0"
-                                value={formData.stock}
-                                onChange={handleChange}
-                                placeholder="0"
-                                required
-                            />
-                        </div>
-                    </Card>
-                </div>
-            </form>
         </div>
     );
 }

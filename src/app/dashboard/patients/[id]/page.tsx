@@ -88,59 +88,59 @@ export default function MedicalRecordPage() {
 
             <div className="grid gap-6">
                 {showForm && (
-                    <Card padding="md" className="border-l-4 border-l-blue-500">
-                        <h3 className="font-bold mb-4">New Clinical Entry</h3>
-                        <form onSubmit={handleAddRecord} className="flex flex-col gap-4">
+                    <div style={{ padding: '40px', backgroundColor: '#fff', borderTop: '6px solid var(--primary-color, #111)', boxShadow: '0 20px 40px rgba(0,0,0,0.06)', borderRadius: '16px', marginBottom: '30px' }}>
+                        <h3 style={{ textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '2px', color: '#999', margin: '0 0 20px 0', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>New Clinical Entry</h3>
+                        <form onSubmit={handleAddRecord} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             <Input
-                                label="Diagnosis"
+                                label="Diagnosis / Reason for Visit"
                                 value={newRecord.diagnosis}
                                 onChange={e => setNewRecord({ ...newRecord, diagnosis: e.target.value })}
                                 required
                             />
-                            <div className="space-y-1">
-                                <label className="block text-sm font-medium text-gray-700">Treatment Plan</label>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#444' }}>Treatment Plan & Notes</label>
                                 <textarea
-                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-y"
+                                    style={{ padding: '16px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem', width: '100%', boxSizing: 'border-box', resize: 'vertical', fontFamily: 'inherit' }}
                                     rows={5}
                                     value={newRecord.treatment}
                                     onChange={e => setNewRecord({ ...newRecord, treatment: e.target.value })}
                                     required
                                 />
                             </div>
-                            <div className="flex justify-end">
-                                <Button type="submit" loading={submitting}>Save Record</Button>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '10px' }}>
+                                <Button type="submit" loading={submitting}>Save Official Record</Button>
                             </div>
                         </form>
-                    </Card>
+                    </div>
                 )}
 
-                <div className="flex flex-col gap-4">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     {(!animal.medicalRecords || animal.medicalRecords.length === 0) ? (
-                        <div className="text-center py-8 text-subtle bg-gray-50 rounded-lg">No medical history recorded yet.</div>
+                        <div style={{ textAlign: 'center', padding: '40px', color: '#888', backgroundColor: '#fafafa', borderRadius: '16px', border: '1px dashed #ddd' }}>No medical history recorded yet.</div>
                     ) : (
                         animal.medicalRecords.map((record: any) => (
-                            <Card key={record.id} padding="md">
-                                <div className="flex gap-4 items-start justify-between w-full">
+                            <div key={record.id} style={{ padding: '30px', backgroundColor: '#fff', borderLeft: '4px solid var(--primary-color, #111)', boxShadow: '0 10px 30px rgba(0,0,0,0.04)', borderRadius: '12px' }}>
+                                <div style={{ display: 'flex', gap: '15px', alignItems: 'flex-start', justifyContent: 'space-between', width: '100%', marginBottom: '15px' }}>
                                     <div>
-                                        <div className="font-bold text-lg">{record.diagnosis}</div>
-                                        <div className="text-sm text-subtle">{new Date(record.date).toLocaleDateString()}</div>
+                                        <div style={{ fontWeight: 800, fontSize: '1.25rem', color: '#111', marginBottom: '4px' }}>{record.diagnosis}</div>
+                                        <div style={{ fontSize: '0.9rem', color: '#888' }}>{new Date(record.date).toLocaleDateString()}</div>
                                     </div>
                                     {(user?.role === 'VET' || user?.role === 'ADMIN') && (
                                         <button
                                             onClick={() => handleDeleteRecord(record.id)}
-                                            className="text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-md text-sm font-medium border border-red-200 transition-colors duration-200 flex items-center gap-1"
+                                            style={{ color: '#e74c3c', backgroundColor: '#fdf0ed', padding: '6px 12px', borderRadius: '6px', fontSize: '0.875rem', fontWeight: 600, border: '1px solid #fadbd8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s' }}
                                             title="Delete record"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                                             Delete
                                         </button>
                                     )}
                                 </div>
-                                <p className="mb-4 text-secondary">{record.treatment}</p>
-                                <div className="text-xs font-medium text-subtle uppercase tracking-wide">
-                                    Attending Vet: {record.veterinarianName}
+                                <p style={{ marginBottom: '20px', color: '#444', lineHeight: '1.6', fontSize: '1rem', padding: '15px', backgroundColor: '#fcfcfc', borderRadius: '8px', border: '1px solid #eee' }}>{record.treatment}</p>
+                                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                    Attending Vet: <span style={{ color: '#666' }}>{record.veterinarianName}</span>
                                 </div>
-                            </Card>
+                            </div>
                         ))
                     )}
                 </div>

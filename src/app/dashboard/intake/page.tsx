@@ -76,132 +76,153 @@ export default function IntakePage() {
 
 
     return (
-        <div className={styles.container}>
-            <div className={styles.header}>
-                <div>
-                    <h1 className={styles.title}>Register New Intake</h1>
-                    <p className="text-subtle">Add a rescued animal to the platform</p>
-                </div>
-                <div className="flex gap-2">
-                    <Button variant="outline" onClick={() => router.back()}>Cancel</Button>
-                    <Button onClick={handleSubmit} disabled={loading}>
-                        {loading ? 'Saving...' : 'Save Record'}
-                    </Button>
-                </div>
-            </div>
+        <div style={{ padding: '20px 0', fontFamily: 'system-ui, sans-serif' }}>
+            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
 
-            <form className={styles.grid}>
-                {/* Left Column: Media & Core ID */}
-                <div className={styles.imageSection}>
-                    <Card padding="none" className={styles.imageUpload}>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            className="absolute inset-0 opacity-0 cursor-pointer"
-                            onChange={handleImageChange}
-                        />
-                        {preview ? (
-                            <img src={preview} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        ) : (
-                            <>
-                                <svg className="w-12 h-12 mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span className="font-medium text-sm">Click to upload photo</span>
-                            </>
-                        )}
-                    </Card>
-
-                    <Card padding="md">
-                        <div className={styles.sectionLabel}>Identification</div>
-                        <div className="flex flex-col gap-4">
-                            <Input
-                                label="Name"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                placeholder="e.g. Buddy"
-                            />
-
-                            <div className={styles.inputWrapper}>
-                                <label className="text-sm font-medium">Species</label>
-                                <select name="species" value={formData.species} onChange={handleChange} className={styles.select}>
-                                    <option value="Dog">Dog</option>
-                                    <option value="Cat">Cat</option>
-                                    <option value="Bird">Bird</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-
-                            <Input
-                                label="Breed"
-                                name="breed"
-                                value={formData.breed}
-                                onChange={handleChange}
-                                placeholder="e.g. Mixed"
-                            />
-                        </div>
-                    </Card>
+                {/* Header */}
+                <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                    <div>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#111', margin: '0 0 10px 0', letterSpacing: '-0.02em' }}>Register New Intake</h1>
+                        <p style={{ color: '#666', fontSize: '1.1rem', margin: 0, maxWidth: '600px' }}>
+                            Add a rescued animal to the platform's adoption roster.
+                        </p>
+                    </div>
                 </div>
 
-                {/* Right Column: Details */}
-                <div className={styles.formSection}>
-                    <Card padding="md">
-                        <div className={styles.sectionLabel}>Physical Details</div>
-                        <div className={styles.row}>
-                            <Input
-                                label="Age (Years)"
-                                name="age"
-                                type="number"
-                                value={formData.age}
-                                onChange={handleChange}
-                            />
-                            <div className={styles.inputWrapper}>
-                                <label className="text-sm font-medium">Gender</label>
-                                <select name="gender" value={formData.gender} onChange={handleChange} className={styles.select}>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                            </div>
-                        </div>
-                    </Card>
+                <div style={{ padding: '40px', backgroundColor: '#fff', borderTop: '6px solid var(--primary-color, #111)', boxShadow: '0 20px 40px rgba(0,0,0,0.06)', borderRadius: '16px' }}>
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
 
-                    <Card padding="md">
-                        <div className={styles.sectionLabel}>History & Status</div>
-                        <div className="flex flex-col gap-4">
-                            <Input
-                                label="Source / Location"
-                                name="location"
-                                value={formData.location}
-                                onChange={handleChange}
-                                placeholder="e.g. South Street Rescue"
-                            />
-
-                            <div className={styles.inputWrapper}>
-                                <label className="text-sm font-medium">Description & Medical Notes</label>
-                                <textarea
-                                    name="description"
-                                    className={styles.textarea}
-                                    value={formData.description}
+                        {/* Section 1: Identification */}
+                        <div>
+                            <h3 style={{ textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '2px', color: '#999', margin: '0 0 20px 0', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>Identification</h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                <Input
+                                    label="Reference Name"
+                                    name="name"
+                                    value={formData.name}
                                     onChange={handleChange}
-                                    placeholder="Describe personality, history, and any medical conditions..."
+                                    placeholder="e.g. Buddy, or Unknown"
+                                />
+                                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '20px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#444' }}>Species</label>
+                                        <select
+                                            name="species"
+                                            style={{ padding: '12px 16px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}
+                                            value={formData.species}
+                                            onChange={handleChange}
+                                        >
+                                            <option value="Dog">Dog</option>
+                                            <option value="Cat">Cat</option>
+                                            <option value="Bird">Bird</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    <Input
+                                        label="Breed / Profile"
+                                        name="breed"
+                                        value={formData.breed}
+                                        onChange={handleChange}
+                                        placeholder="e.g. Mixed, Golden Retriever"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Section 2: Physical & History */}
+                        <div>
+                            <h3 style={{ textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '2px', color: '#999', margin: '0 0 20px 0', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>Physical & Details</h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '20px' }}>
+                                    <Input
+                                        label="Estimated Age (Years)"
+                                        name="age"
+                                        type="number"
+                                        value={formData.age}
+                                        onChange={handleChange}
+                                    />
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#444' }}>Gender</label>
+                                        <select
+                                            name="gender"
+                                            style={{ padding: '12px 16px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}
+                                            value={formData.gender}
+                                            onChange={handleChange}
+                                        >
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <Input
+                                    label="Source / Rescued From"
+                                    name="location"
+                                    value={formData.location}
+                                    onChange={handleChange}
+                                    placeholder="e.g. South Street Rescue"
+                                />
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#444' }}>Medical & Behavioral Profile</label>
+                                    <textarea
+                                        name="description"
+                                        style={{ padding: '16px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem', width: '100%', boxSizing: 'border-box', resize: 'vertical', fontFamily: 'inherit' }}
+                                        rows={4}
+                                        value={formData.description}
+                                        onChange={handleChange}
+                                        placeholder="Describe personality, history, and medical conditions..."
+                                    />
+                                </div>
+
+                                <Input
+                                    label="Adoption Fee (₹)"
+                                    name="fee"
+                                    type="number"
+                                    value={formData.fee}
+                                    onChange={handleChange}
+                                    placeholder="0"
                                 />
                             </div>
                         </div>
-                    </Card>
 
-                    <Card padding="md">
-                        <div className={styles.sectionLabel}>Adoption</div>
-                        <Input
-                            label="Adoption Fee (₹)"
-                            name="fee"
-                            type="number"
-                            value={formData.fee}
-                            onChange={handleChange}
-                        />
-                    </Card>
+                        {/* Section 3: Media */}
+                        <div>
+                            <h3 style={{ textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '2px', color: '#999', margin: '0 0 20px 0', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>Profile Photograph</h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <p style={{ margin: '0 0 10px 0', fontSize: '0.9rem', color: '#666' }}>Upload a clear photo to help adopters connect.</p>
+                                <div style={{ border: '2px dashed #ccc', borderRadius: '12px', padding: '30px', position: 'relative', textAlign: 'center', backgroundColor: '#fafafa', cursor: 'pointer' }}>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer', zIndex: 10 }}
+                                        onChange={handleImageChange}
+                                    />
+                                    {preview ? (
+                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
+                                            <img src={preview} alt="Preview" style={{ width: '150px', height: '150px', objectFit: 'cover', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                                            <span style={{ color: '#2ecc71', fontWeight: 600 }}>Image Selected - Click to change</span>
+                                        </div>
+                                    ) : (
+                                        <div style={{ color: '#888' }}>
+                                            <div style={{ fontSize: '2rem', marginBottom: '10px' }}>📷</div>
+                                            <div style={{ fontWeight: 600 }}>Click or drag a photo here</div>
+                                            <div style={{ fontSize: '0.8rem', marginTop: '5px' }}>Supports JPG/PNG up to 5MB</div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '15px', paddingTop: '20px', borderTop: '1px solid #eee' }}>
+                            <Button variant="outline" type="button" onClick={() => router.back()}>Cancel Registration</Button>
+                            <Button type="submit" loading={loading}>Save Intake Record</Button>
+                        </div>
+
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     );
 }
