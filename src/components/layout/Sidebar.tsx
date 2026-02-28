@@ -29,6 +29,9 @@ export function Sidebar() {
                 {(user.role === 'RESCUE' || user.role === 'ADMIN') && (
                     <>
                         <div className={styles.sectionTitle}>Rescue Operations</div>
+                        <Link href="/dashboard/rescue-management" className={`${styles.item} ${isActive('/dashboard/rescue-management')}`}>
+                            Transfer Requests
+                        </Link>
                         <Link href="/dashboard/rescues" className={`${styles.item} ${isActive('/dashboard/rescues')}`}>
                             My Animals
                         </Link>
@@ -70,9 +73,12 @@ export function Sidebar() {
 
                 {(user.role === 'USER' || user.role === 'ADMIN') && (
                     <>
-                        <div className={styles.sectionTitle}>Philanthropy</div>
+                        <div className={styles.sectionTitle}>Involvement</div>
                         <Link href="/dashboard/donations" className={`${styles.item} ${isActive('/dashboard/donations')}`}>
                             My Donations
+                        </Link>
+                        <Link href="/dashboard/my-rescues" className={`${styles.item} ${isActive('/dashboard/my-rescues')}`}>
+                            Report Found Pet
                         </Link>
                         <Link href="/animals" className={`${styles.item} ${isActive('/animals')}`}>
                             Browse to Sponsor

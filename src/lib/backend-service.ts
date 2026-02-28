@@ -66,6 +66,33 @@ class BackendService {
         return res.json();
     }
 
+    // Rescue Requests Methods
+    async submitRescueRequest(request: { petName?: string; species: string; breed: string; location: string; description: string }) {
+        const res = await fetch('/api/rescue-requests', {
+            method: 'POST',
+            body: JSON.stringify(request),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!res.ok) throw new Error('Failed to submit rescue request');
+        return res.json();
+    }
+
+    async getRescueRequests() {
+        const res = await fetch('/api/rescue-requests');
+        if (!res.ok) throw new Error('Failed to fetch rescue requests');
+        return res.json();
+    }
+
+    async updateRescueRequestStatus(id: string, status: 'APPROVED' | 'REJECTED') {
+        const res = await fetch(`/api/rescue-requests/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({ status }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!res.ok) throw new Error('Failed to update rescue request status');
+        return res.json();
+    }
+
 
     // Donation Methods
     async addDonation(donation: Omit<Donation, 'id' | 'date' | 'userId'>) {

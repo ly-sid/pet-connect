@@ -44,6 +44,18 @@ export interface AdoptionRequest {
     message: string;
 }
 
+export interface RescueRequest {
+    id: string;
+    userId: string;
+    petName: string;
+    species: string;
+    breed: string;
+    location: string;
+    description: string;
+    status: 'PENDING' | 'APPROVED' | 'REJECTED';
+    createdAt: string;
+}
+
 export interface Donation {
     id: string;
     userId: string;
