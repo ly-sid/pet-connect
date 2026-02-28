@@ -59,6 +59,17 @@ export default function MedicalRecordPage() {
         }
     };
 
+    const handleDeleteRecord = async (recordId: string) => {
+        if (!confirm('Are you sure you want to delete this medical record?')) return;
+
+        try {
+            await backendService.deleteMedicalRecord(recordId);
+            fetchAnimal(); // Refresh list
+        } catch (error) {
+            alert('Failed to delete medical record.');
+        }
+    };
+
     if (loading) return <div className="container py-12 text-center">Loading...</div>;
     if (!animal) return <div className="container py-12 text-center">Record not found.</div>;
 
@@ -105,9 +116,19 @@ export default function MedicalRecordPage() {
                     ) : (
                         animal.medicalRecords.map((record: any) => (
                             <Card key={record.id} padding="md">
-                                <div className="flex justify-between mb-2">
-                                    <div className="font-bold text-lg">{record.diagnosis}</div>
-                                    <div className="text-sm text-subtle">{new Date(record.date).toLocaleDateString()}</div>
+                                <div className="flex gap-4 items-start">
+                                    <div>
+                                        <div className="font-bold text-lg">{record.diagnosis}</div>
+                                        <div className="text-sm text-subtle">{new Date(record.date).toLocaleDateString()}</div>
+                                    </div>
+                                    {(user?.role === 'VET' || user?.role === 'ADMIN') && (
+                                        <button
+                                            onClick={() => handleDeleteRecord(record.id)}
+                                            className="text-red-500 hover:text-red-700 text-sm font-medium"
+                                        >
+                                            Delete
+                                        </button>
+                                    )}
                                 </div>
                                 <p className="mb-4 text-secondary">{record.treatment}</p>
                                 <div className="text-xs font-medium text-subtle uppercase tracking-wide">

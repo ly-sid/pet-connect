@@ -96,6 +96,14 @@ class BackendService {
         return res.json();
     }
 
+    async deleteMedicalRecord(id: string) {
+        const res = await fetch(`/api/medical-records/${id}`, {
+            method: 'DELETE'
+        });
+        if (!res.ok) throw new Error('Failed to delete medical record');
+        return res.json();
+    }
+
     // Notification Methods
     async getNotifications() {
         const res = await fetch('/api/notifications');
