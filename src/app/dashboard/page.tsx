@@ -66,7 +66,7 @@ export default function DashboardPage() {
                 {user.role === 'USER' && stats && (
                     <>
                         <StatsCard title="My Applications" value={stats.myApplications?.toString() || '0'} label="Applications submitted" />
-                        <StatsCard title="Favorites" value="0" label="Saved animals" />
+                        <StatsCard title="Favorites" value={stats.favorites?.toString() || '0'} label="Saved animals" />
                     </>
                 )}
 

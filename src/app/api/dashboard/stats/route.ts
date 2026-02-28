@@ -31,7 +31,11 @@ export async function GET(req: Request) {
             stats.pendingInquiries = await prisma.adoptionRequest.count({ where: { status: 'PENDING' } });
         } else if (user.role === 'USER') {
             stats.myApplications = await prisma.adoptionRequest.count({ where: { userId: user.id } });
-            stats.favorites = 0; // Placeholder
+            const userWithFavs = await prisma.user.findUnique({
+                where: { id: user.id },
+                include: { _count: { select: { favoriteAnimals: true } } }
+            });
+            stats.favorites = userWithFavs?._count?.favoriteAnimals || 0;
         } else if (user.role === 'DONOR') {
             const contribution = await prisma.donation.aggregate({
                 where: { userId: user.id },
