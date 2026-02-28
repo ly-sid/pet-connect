@@ -15,7 +15,6 @@ export default function RegisterPage() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState<any>('USER');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { register } = useAuth();
@@ -26,7 +25,7 @@ export default function RegisterPage() {
         setError('');
         setLoading(true);
         try {
-            await register(name, username, email, password, role);
+            await register(name, username, email, password);
             router.push('/dashboard');
         } catch (err: any) {
             setError(err.message || 'Registration failed');
@@ -83,20 +82,6 @@ export default function RegisterPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-
-                <Select
-                    label="Select Role"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    options={[
-                        { value: 'USER', label: 'Standard User' },
-                        { value: 'VET', label: 'Veterinarian' },
-                        { value: 'RESCUE', label: 'Rescue Team' },
-                        { value: 'DONOR', label: 'Donor' },
-                    ]}
-                />
-
-
 
                 <Button type="submit" fullWidth loading={loading} className="mt-4">
                     Create Account

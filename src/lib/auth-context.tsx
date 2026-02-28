@@ -6,7 +6,7 @@ import { User, UserRole } from './types';
 interface AuthContextType {
     user: User | null;
     login: (username: string, password: string) => Promise<void>;
-    register: (name: string, username: string, email: string, password: string, role: UserRole) => Promise<void>;
+    register: (name: string, username: string, email: string, password: string) => Promise<void>;
     logout: () => void;
     isAuthenticated: boolean;
 }
@@ -38,10 +38,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('pet_connect_user', JSON.stringify(data.user));
     };
 
-    const register = async (name: string, username: string, email: string, password: string, role: UserRole) => {
+    const register = async (name: string, username: string, email: string, password: string) => {
         const res = await fetch('/api/auth/register', {
             method: 'POST',
-            body: JSON.stringify({ name, username, email, password, role }),
+            body: JSON.stringify({ name, username, email, password }),
             headers: { 'Content-Type': 'application/json' }
         });
 
