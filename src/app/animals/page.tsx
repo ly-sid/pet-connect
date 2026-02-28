@@ -14,6 +14,42 @@ export default function AnimalSearchPage() {
     const [search, setSearch] = useState('');
     const [speciesFilter, setSpeciesFilter] = useState('All');
     const [loading, setLoading] = useState(true);
+    const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+
+    // Using require to get Auth Context here to avoid refactoring the whole import structure
+    const { useAuth } = require('@/lib/auth-context');
+    const { user } = useAuth();
+
+    useEffect(() => {
+        if (user) {
+            backendService.getFavorites().then(favs => {
+                if (Array.isArray(favs)) {
+                    setFavoriteIds(new Set(favs.map((f: Animal) => f.id)));
+                }
+            });
+        }
+    }, [user]);
+
+    const toggleFav = async (e: React.MouseEvent, id: string) => {
+        e.preventDefault();
+        if (!user) {
+            alert("Please login to save favorites!");
+            return;
+        }
+
+        const newSet = new Set(favoriteIds);
+        if (newSet.has(id)) newSet.delete(id);
+        else newSet.add(id);
+        setFavoriteIds(newSet);
+
+        try {
+            await backendService.toggleFavorite(id);
+        } catch (error) {
+            console.error('Failed to toggle favorite', error);
+            const revertSet = new Set(favoriteIds);
+            setFavoriteIds(revertSet);
+        }
+    };
 
     useEffect(() => {
         const fetchAnimals = async () => {
@@ -76,19 +112,34 @@ export default function AnimalSearchPage() {
                 <>
                     <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
                         {filtered.map(animal => (
-                            <Link key={animal.id} href={`/animals/${animal.id}`}>
-                                <Card padding="none" className="h-full" interactive>
+                            <Card key={animal.id} padding="none" className="h-full relative overflow-hidden flex flex-col" interactive>
+                                <Link href={`/animals/${animal.id}`} className="block relative">
                                     <div style={{ height: '240px', backgroundColor: '#e5e7eb', backgroundImage: `url(${animal.images[0]})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-                                    <div className="p-4">
-                                        <div className="flex justify-between items-center mb-1">
-                                            <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{animal.name}</h3>
-                                            <span style={{ fontWeight: 600, color: 'var(--accent-color)' }}>₹{animal.fee}</span>
-                                        </div>
-                                        <p className="text-subtle text-sm mb-3">{animal.breed} • {animal.age} yrs • {animal.gender}</p>
-                                        <Button fullWidth variant="outline">View Profile</Button>
+                                </Link>
+
+                                <button
+                                    onClick={(e) => toggleFav(e, animal.id)}
+                                    className={`absolute top-3 right-3 p-2 rounded-full shadow-md transition-transform flex items-center justify-center z-10 ${favoriteIds.has(animal.id) ? 'bg-white text-red-500 hover:scale-110' : 'bg-white/80 text-gray-400 hover:bg-white hover:text-red-500'}`}
+                                    aria-label="Toggle favorite"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={favoriteIds.has(animal.id) ? 'currentColor' : 'none'} stroke="currentColor" className="w-5 h-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={favoriteIds.has(animal.id) ? 0 : 2} d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                    </svg>
+                                </button>
+
+                                <div className="p-4 flex flex-col flex-1">
+                                    <div className="flex justify-between items-center mb-1">
+                                        <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{animal.name}</h3>
+                                        <span style={{ fontWeight: 600, color: 'var(--accent-color)' }}>₹{animal.fee}</span>
                                     </div>
-                                </Card>
-                            </Link>
+                                    <p className="text-subtle text-sm mb-3">{animal.breed} • {animal.age} yrs • {animal.gender}</p>
+                                    <div className="mt-auto">
+                                        <Link href={`/animals/${animal.id}`}>
+                                            <Button fullWidth variant="outline">View Profile</Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </Card>
                         ))}
                     </div>
 

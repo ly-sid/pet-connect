@@ -141,6 +141,23 @@ class BackendService {
         }
         return res.json();
     }
+
+    // Favorites Methods
+    async toggleFavorite(animalId: string) {
+        const res = await fetch('/api/favorites', {
+            method: 'POST',
+            body: JSON.stringify({ animalId }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!res.ok) throw new Error('Failed to toggle favorite');
+        return res.json();
+    }
+
+    async getFavorites() {
+        const res = await fetch('/api/favorites');
+        if (!res.ok) throw new Error('Failed to fetch favorites');
+        return res.json();
+    }
 }
 
 

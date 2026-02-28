@@ -51,6 +51,7 @@ model User {
   donations        Donation[]
   boardingBookings BoardingBooking[]
   notifications    Notification[]
+  favoriteAnimals  Animal[]          @relation("UserFavorites")
 }
 
 model Notification {
@@ -81,6 +82,7 @@ model Animal {
   updatedAt      DateTime        @updatedAt
   medicalRecords MedicalRecord[]
   adoptionRequests AdoptionRequest[]
+  favoritedBy    User[]          @relation("UserFavorites")
 }
 
 model AdoptionRequest {

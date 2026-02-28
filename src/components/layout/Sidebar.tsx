@@ -82,6 +82,9 @@ export function Sidebar() {
 
                 {/* Common for Everyone */}
                 <div className={styles.sectionTitle}>Account</div>
+                <Link href="/dashboard/favorites" className={`${styles.item} ${isActive('/dashboard/favorites')}`}>
+                    My Favorites
+                </Link>
                 <Link href="/dashboard/profile" className={`${styles.item} ${isActive('/dashboard/profile')}`}>
                     My Profile
                 </Link>

@@ -15,6 +15,31 @@ export default function AnimalDetailsPage() {
     const [animal, setAnimal] = useState<Animal | null>(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [isFavorite, setIsFavorite] = useState(false);
+
+    useEffect(() => {
+        if (user && animal) {
+            backendService.getFavorites().then(favs => {
+                if (Array.isArray(favs)) {
+                    setIsFavorite(favs.some((f: Animal) => f.id === animal.id));
+                }
+            });
+        }
+    }, [user, animal]);
+
+    const toggleFav = async () => {
+        if (!user) {
+            alert("Please login to save favorites!");
+            return;
+        }
+        setIsFavorite(!isFavorite);
+        try {
+            await backendService.toggleFavorite(animal!.id);
+        } catch (error) {
+            console.error('Failed to toggle favorite', error);
+            setIsFavorite(isFavorite);
+        }
+    };
 
     useEffect(() => {
         if (typeof id === 'string') {
@@ -107,7 +132,18 @@ export default function AnimalDetailsPage() {
                     </div>
 
                     <div className="flex gap-4">
-                        <Button size="lg" fullWidth loading={submitting} onClick={handleAdopt}>Adopt {animal.name}</Button>
+                        <Button size="lg" style={{ flex: 1 }} loading={submitting} onClick={handleAdopt}>Adopt {animal.name}</Button>
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            onClick={toggleFav}
+                            className={isFavorite ? 'text-red-500 border-red-200 bg-red-50 hover:bg-red-100 hover:text-red-600' : ''}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={isFavorite ? 'currentColor' : 'none'} stroke="currentColor" className="w-5 h-5 mr-2 inline">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={isFavorite ? 0 : 2} d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                            </svg>
+                            {isFavorite ? 'Favorited' : 'Favorite'}
+                        </Button>
                     </div>
                 </div>
             </div>
