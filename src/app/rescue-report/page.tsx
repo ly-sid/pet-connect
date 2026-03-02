@@ -43,11 +43,10 @@ export default function StandaloneRescueReportPage() {
         try {
             await backendService.submitRescueRequest(formData);
             alert('Your rescue request has been submitted to our team!');
-            window.close();
-            // Fallback if not opened via JS
-            if (typeof window !== 'undefined') {
+            // Fallback redirect if not opened as a true child window
+            setTimeout(() => {
                 window.location.href = '/dashboard/my-rescues';
-            }
+            }, 500);
         } catch (error) {
             alert('Failed to submit rescue request.');
         } finally {
@@ -83,6 +82,7 @@ export default function StandaloneRescueReportPage() {
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                         <label style={{ fontSize: '0.875rem', fontWeight: 600, color: '#444' }}>Species</label>
                                         <select
+                                            suppressHydrationWarning
                                             style={{ padding: '12px 16px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '1rem', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}
                                             value={formData.species}
                                             onChange={e => setFormData({ ...formData, species: e.target.value })}

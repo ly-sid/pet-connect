@@ -12,6 +12,9 @@ export function Sidebar() {
 
     if (!user) return null;
 
+    // Standardize role to handle legacy lowercase sessions or undefined fallback
+    const role = user.role?.toUpperCase() || 'USER';
+
     const isActive = (path: string) => pathname === path || pathname.startsWith(path + '/') ? styles.active : '';
 
     return (
@@ -26,7 +29,7 @@ export function Sidebar() {
                 </Link>
 
                 {/* Role Specific Modules */}
-                {(user.role === 'RESCUE' || user.role === 'ADMIN') && (
+                {(role === 'RESCUE' || role === 'ADMIN') && (
                     <>
                         <div className={styles.sectionTitle}>Rescue Operations</div>
                         <Link href="/dashboard/rescue-management" className={`${styles.item} ${isActive('/dashboard/rescue-management')}`}>
@@ -41,7 +44,7 @@ export function Sidebar() {
                     </>
                 )}
 
-                {(user.role === 'VET' || user.role === 'ADMIN') && (
+                {(role === 'VET' || role === 'ADMIN') && (
                     <>
                         <div className={styles.sectionTitle}>Medical</div>
                         <Link href="/dashboard/patients" className={`${styles.item} ${isActive('/dashboard/patients')}`}>
@@ -53,7 +56,7 @@ export function Sidebar() {
                     </>
                 )}
 
-                {(user.role === 'ADMIN') && (
+                {(role === 'ADMIN') && (
                     <>
                         <div className={styles.sectionTitle}>Administration</div>
                         <Link href="/dashboard/users" className={`${styles.item} ${isActive('/dashboard/users')}`}>
@@ -71,7 +74,7 @@ export function Sidebar() {
                     </>
                 )}
 
-                {(user.role === 'USER' || user.role === 'ADMIN') && (
+                {(role === 'USER' || role === 'ADMIN') && (
                     <>
                         <div className={styles.sectionTitle}>Involvement</div>
                         <Link href="/dashboard/donations" className={`${styles.item} ${isActive('/dashboard/donations')}`}>
